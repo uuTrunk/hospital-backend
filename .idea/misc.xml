@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/hospital-estimate/pom.xml" />
+        <option value="$PROJECT_DIR$/hospital-discharge-service/pom.xml" />
       </list>
     </option>
   </component>
