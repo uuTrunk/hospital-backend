@@ -1,4 +1,4 @@
-package com.uutrunk.hospitalestimate.po;
+package com.uutrunk.hospitalestimate.pojo;
 
 import lombok.Data;
 

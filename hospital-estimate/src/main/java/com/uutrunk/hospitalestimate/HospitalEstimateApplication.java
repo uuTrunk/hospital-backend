@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableDubbo
+
 public class HospitalEstimateApplication {
 
     public static void main(String[] args) {
