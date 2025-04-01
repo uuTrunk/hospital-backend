@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/hospital-backend.iml" filepath="$PROJECT_DIR$/.idea/hospital-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hospital-discharge-service/hospital-discharge-service.iml" filepath="$PROJECT_DIR$/hospital-discharge-service/hospital-discharge-service.iml" />
     </modules>
   </component>
 </project>
