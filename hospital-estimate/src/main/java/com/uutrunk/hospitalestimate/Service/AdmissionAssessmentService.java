@@ -1,4 +1,4 @@
-package com.uutrunk.hospitalestimate.service;
+package com.uutrunk.hospitalestimate.Service;
 
 public interface AdmissionAssessmentService {
 

@@ -1,6 +1,8 @@
-package com.uutrunk.hospitalestimate.pojo;
+package com.uutrunk.hospitalestimate.POJO;
 
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author uutrunk
@@ -9,5 +11,5 @@ import lombok.Data;
 public class PastIllness {
     private int id;
     private int assessmentId;
-    private String illnessName;
+    private List<String> illnessName;
 }
