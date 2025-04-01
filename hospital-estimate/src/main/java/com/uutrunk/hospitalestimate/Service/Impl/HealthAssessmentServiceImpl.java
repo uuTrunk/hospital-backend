@@ -9,10 +9,12 @@ import com.uutrunk.hospitalestimate.POJO.DietRestriction;
 import com.uutrunk.hospitalestimate.POJO.PatientAssessment;
 import com.uutrunk.hospitalestimate.Service.HealthAssessmentService;
 import com.uutrunk.hospitalestimate.VO.HealthAssessmentVO;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class HealthAssessmentServiceImpl implements HealthAssessmentService {
 
     private CurrentIllnessMapper currentIllnessMapper;
