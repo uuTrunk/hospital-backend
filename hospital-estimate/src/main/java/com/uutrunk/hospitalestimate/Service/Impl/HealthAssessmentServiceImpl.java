@@ -1,8 +1,8 @@
 package com.uutrunk.hospitalestimate.Service.Impl;
 
-import com.uutrunk.hospitalestimate.DAO.CurrentIllnessMapper;
-import com.uutrunk.hospitalestimate.DAO.DietRestrictionMapper;
-import com.uutrunk.hospitalestimate.DAO.PatientAssessmentMapper;
+import com.uutrunk.hospitalestimate.mapper.CurrentIllnessMapper;
+import com.uutrunk.hospitalestimate.mapper.DietRestrictionMapper;
+import com.uutrunk.hospitalestimate.mapper.PatientAssessmentMapper;
 import com.uutrunk.hospitalestimate.Enum.AdmissionAgreement;
 import com.uutrunk.hospitalestimate.POJO.CurrentIllness;
 import com.uutrunk.hospitalestimate.POJO.DietRestriction;

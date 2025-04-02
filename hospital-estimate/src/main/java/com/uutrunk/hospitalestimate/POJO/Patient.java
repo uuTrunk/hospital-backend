@@ -1,5 +1,7 @@
 package com.uutrunk.hospitalestimate.POJO;
 
+import com.uutrunk.hospitalestimate.Enum.AssessmentStatus;
+import com.uutrunk.hospitalestimate.Enum.Gender;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,13 +20,5 @@ public class Patient {
     private AssessmentStatus healthAssessmentStatus;
     private AssessmentStatus careAssessmentStatus;
 
-    // Enum classes for Gender and AssessmentStatus
-    public enum Gender {
-        男, 女
-    }
-
-    public enum AssessmentStatus {
-        待评估, 未完成, 完成
-    }
 }
     
