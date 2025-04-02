@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
 
-/**
+/**D
  * 对应数据库表：discharge_main
  */
 @Entity
@@ -23,13 +23,8 @@ public class DischargeMain {
      * 或者建立和 PatientInfo 实体的关联关系
      */
 
-    // 方案 A：只存 patientId（简单方式）
-    /*
-    @Column(name = "patient_id", nullable = false)
-    private Integer patientId;
-    */
 
-    // 方案 B：建立多对一关系（推荐方式，如果你有 PatientInfo 实体）
+    // 建立多对一关系
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private PatientInfo patientInfo;
