@@ -14,6 +14,11 @@ public class DischargeSummaryServiceImpl implements DischargeSummaryService {
 
     @Override
     public DischargeSummary getDischargeSummaryByDischargeId(Integer dischargeId) {
-        return dischargeSummaryRepository.findByDischargeMain_DischargeId(dischargeId);  // 通过离院记录 ID 查询离院小结
+        return dischargeSummaryRepository.findByDischargeMain_DischargeId(dischargeId);
+    }
+
+    @Override
+    public DischargeSummary saveDischargeSummary(DischargeSummary dischargeSummary) {
+        return dischargeSummaryRepository.save(dischargeSummary);
     }
 }
