@@ -5,6 +5,7 @@ import com.uutrunk.hospitalestimate.Service.CareAssessmentService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,5 +31,15 @@ public class CareAssessmentServiceImpl implements CareAssessmentService {
         detail.put("cognitive_ability", cognitiveAbility);
 
         return detail;
+    }
+
+    public void submitCareAssessment(int assessmentId, List<Map<String, String>> assessmentItems) {
+        // 模拟保存逻辑
+        for (Map<String, String> item : assessmentItems) {
+            String project = item.get("project");
+            String evaluation = item.get("evaluation");
+            System.out.println("Saving assessment item - Project: " + project + ", Evaluation: " + evaluation);
+        }
+        // 实际实现中可以将数据保存到数据库
     }
 }

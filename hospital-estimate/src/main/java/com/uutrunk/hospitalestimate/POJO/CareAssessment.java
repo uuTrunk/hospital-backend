@@ -1,5 +1,6 @@
 package com.uutrunk.hospitalestimate.POJO;
 
+import com.uutrunk.hospitalestimate.Enum.RiskLevel;
 import lombok.Data;
 
 /**
@@ -12,11 +13,4 @@ public class CareAssessment {
     private String careAssessmentProject;
     private String careEvaluation;
     private RiskLevel riskLevel;
-
-    private enum RiskLevel {
-        正常,
-        轻度,
-        中毒,
-        重度
-    }
 }
