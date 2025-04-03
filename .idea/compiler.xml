@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="hospital-estimate" />
         <module name="hospital-discharge-service" />
+        <module name="hospital-ordermanagement" />
       </profile>
     </annotationProcessing>
   </component>
