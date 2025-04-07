@@ -349,7 +349,7 @@ CREATE TABLE prescription_detail (
     drug_id INT,
     specification VARCHAR(50),
     dosage VARCHAR(50),
-    usage VARCHAR(50),
+    usage_method VARCHAR(50),
     frequency VARCHAR(50),
     days INT,
     total_quantity VARCHAR(50),
