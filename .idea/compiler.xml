@@ -9,6 +9,7 @@
         <module name="hospital-estimate" />
         <module name="hospital-discharge-service" />
         <module name="hospital-ordermanagement" />
+        <module name="hospital-login" />
       </profile>
     </annotationProcessing>
   </component>

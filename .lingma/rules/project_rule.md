@@ -93,8 +93,8 @@ public class UserController {
 ```java
 // 使用 record 或 @Data 注解
 public record UserDTO(
-    @NotBlank String username,
-    @Email String email
+    String username,
+    String email
 ) {
     public static UserDTO fromEntity(User entity) {
         return new UserDTO(entity.getUsername(), entity.getEmail());
