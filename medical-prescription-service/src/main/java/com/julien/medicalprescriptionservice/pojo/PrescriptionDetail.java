@@ -13,7 +13,7 @@ public class PrescriptionDetail {
     private Integer detailId; // 明细ID
 
     @TableField("prescription_id")
-    private Integer prescriptionId; // 主表ID
+    private String prescriptionId; // 主表ID
 
     @TableField("drug_name")
     private String drugName; // 药品名称

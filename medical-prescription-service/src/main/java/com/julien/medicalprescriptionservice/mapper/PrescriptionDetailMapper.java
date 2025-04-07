@@ -10,4 +10,6 @@ import java.util.List;
 public interface PrescriptionDetailMapper {
 
     List<PrescriptionDetail> selectByPrescriptionId(@Param("prescriptionId") String prescriptionId);
+    // 批量插入
+    void insertBatch(List<PrescriptionDetail> details);
 }
