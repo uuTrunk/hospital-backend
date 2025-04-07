@@ -4,8 +4,9 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 @Data
-public class TemporaryOrder {
+public class DoctorInfo {
     @Id
-    private String orderId;
-    private String validityPeriod; // 有效期描述
+    private Integer doctorId;
+    private String name;
+    private String department;
 }

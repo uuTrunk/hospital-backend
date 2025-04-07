@@ -1,8 +1,8 @@
 package com.uutrunk.hospitalordermanagement.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.uutrunk.hospitalordermanagement.pojo.TemporaryOrder;
+import com.uutrunk.hospitalordermanagement.pojo.DoctorInfo;
 
-public interface TemporaryOrderMapper extends BaseMapper<TemporaryOrder> {
+public interface DoctorInfoMapper extends BaseMapper<DoctorInfo> {
     // 自动实现CRUD操作
 }
