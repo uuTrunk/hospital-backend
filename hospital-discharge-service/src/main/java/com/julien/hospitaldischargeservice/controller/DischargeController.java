@@ -1,9 +1,12 @@
 package com.julien.hospitaldischargeservice.controller;
 
+import com.julien.hospitaldischargeservice.dto.DischargeListResponseDTO;
+import com.julien.hospitaldischargeservice.dto.DischargeListItemDTO;
 import com.julien.hospitaldischargeservice.entity.DischargeMain;
 import com.julien.hospitaldischargeservice.service.DischargeService;
 import com.julien.hospitaldischargeservice.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/discharge")
@@ -21,7 +26,7 @@ public class DischargeController {
     private final DischargeService dischargeService;
 
     @GetMapping("/list")
-    public ApiResponse<?> getDischargeList(
+    public ApiResponse<DischargeListResponseDTO> getDischargeList(
             @RequestParam(required = false) String start_date,
             @RequestParam(required = false) String end_date,
             @RequestParam(required = false) String name_or_code,
@@ -39,8 +44,17 @@ public class DischargeController {
 
         Page<DischargeMain> dischargeList = dischargeService.getDischargeList(startDate, endDate, name_or_code, pageRequest);
 
-        // 包装响应为 ApiResponse 格式
-        return new ApiResponse<>(200, "成功", new DataWrapper(dischargeList.getTotalElements(), dischargeList.getContent()));
+        // 将 DischargeMain 转换为 DischargeListItemDTO
+        List<DischargeListItemDTO> dischargeListItems = dischargeList.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        // 封装响应
+        DischargeListResponseDTO response = new DischargeListResponseDTO();
+        response.setTotal(dischargeList.getTotalElements());
+        response.setList(dischargeListItems);
+
+        return new ApiResponse<>(200, "成功", response);
     }
 
     private LocalDate parseDate(String dateStr) {
@@ -51,30 +65,9 @@ public class DischargeController {
         }
     }
 
-    // 包装分页数据结构
-    public static class DataWrapper {
-        private long total;
-        private Object list;
-
-        public DataWrapper(long total, Object list) {
-            this.total = total;
-            this.list = list;
-        }
-
-        public long getTotal() {
-            return total;
-        }
-
-        public void setTotal(long total) {
-            this.total = total;
-        }
-
-        public Object getList() {
-            return list;
-        }
-
-        public void setList(Object list) {
-            this.list = list;
-        }
+    private DischargeListItemDTO convertToDTO(DischargeMain dischargeMain) {
+        DischargeListItemDTO dto = new DischargeListItemDTO();
+        BeanUtils.copyProperties(dischargeMain, dto);
+        return dto;
     }
 }
