@@ -15,7 +15,7 @@ public class DischargeSummary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "summary_id")
-    private Integer summaryId; // 小结ID，自增
+    private Integer summaryId; // 离院记录 ID（来自 `discharge_main` 表）
 
     /**
      * 外键关联到 discharge_main 表的 discharge_id
@@ -26,35 +26,35 @@ public class DischargeSummary {
     private DischargeMain dischargeMain;
 
     @Column(name = "discharge_date", nullable = false)
-    private LocalDate dischargeDate; // 离院日期
+    private LocalDate dischargeDate; // 离院日期或死亡日期
 
     @Column(name = "illness_name", length = 100, nullable = false)
-    private String illnessName; // 疾病名称
+    private String illnessName; // 疾病名称，死亡诊断或出院诊断
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "summary_type")
-    private SummaryType summaryType; // 小结类型
+    @Column(name = "summary_type", nullable = false)
+    private SummaryType summaryType; // 小结类型（'普通小结'或'死亡小结'）
 
     @Column(name = "admission_diagnosis", columnDefinition = "TEXT")
     private String admissionDiagnosis; // 入院诊断
 
     @Column(name = "in_hospital_condition", columnDefinition = "TEXT")
-    private String inHospitalCondition; // 住院情况
+    private String inHospitalCondition; // 入院情况
 
     @Column(name = "treatment_process", columnDefinition = "TEXT")
-    private String treatmentProcess; // 治疗过程
+    private String treatmentProcess; // 在院治疗过程
 
     @Column(name = "discharge_condition", columnDefinition = "TEXT")
     private String dischargeCondition; // 出院情况
 
     @Column(name = "discharge_advice", columnDefinition = "TEXT")
-    private String dischargeAdvice; // 出院医嘱
+    private String dischargeAdvice; // 出院医嘱，出院小结填写
 
     @Column(name = "rescue_process", columnDefinition = "TEXT")
-    private String rescueProcess; // 抢救过程
+    private String rescueProcess; // 抢救过程，死亡小结填写
 
     @Column(name = "death_cause", columnDefinition = "TEXT")
-    private String deathCause; // 死亡原因
+    private String deathCause; // 死亡原因，死亡小结填写
 
     // 枚举：普通小结 or 死亡小结
     public enum SummaryType {

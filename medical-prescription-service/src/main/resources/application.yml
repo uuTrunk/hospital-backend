@@ -6,7 +6,7 @@ spring:
     name: medical-prescription-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hospital_db
+    url: jdbc:mysql://localhost:3306/mps_db
     username: root
     password: 123456
 
