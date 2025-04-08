@@ -8,7 +8,6 @@
         <option value="$PROJECT_DIR$/hospital-discharge-service/pom.xml" />
         <option value="$PROJECT_DIR$/hospital-ordermanagement/pom.xml" />
         <option value="$PROJECT_DIR$/hospital-login/pom.xml" />
-        <option value="$PROJECT_DIR$/hospital-health-document/pom.xml" />
       </list>
     </option>
   </component>
