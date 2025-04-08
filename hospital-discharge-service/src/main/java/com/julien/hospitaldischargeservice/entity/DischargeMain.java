@@ -52,7 +52,8 @@ public class DischargeMain {
     public enum DischargeReason {
         自动出院,
         转院出院,
-        外院死亡
+        外院死亡,
+        本院死亡
     }
 
     public enum SummaryStatus {
