@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uutrunk.hospitalordermanagement.mapper.MedicalOrderMainMapper">
+
+    <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.MedicalOrderMain">
+            <id property="order_id" column="order_id" />
+            <result property="patient_id" column="patient_id" />
+            <result property="doctor_id" column="doctor_id" />
+            <result property="order_type" column="order_type" />
+            <result property="content" column="content" />
+            <result property="dosage" column="dosage" />
+            <result property="usage" column="usage" />
+            <result property="frequency" column="frequency" />
+            <result property="send_time" column="send_time" />
+            <result property="status" column="status" />
+            <result property="start_time" column="start_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        order_id,patient_id,doctor_id,order_type,content,dosage,
+        usage,frequency,send_time,status,start_time
+    </sql>
+</mapper>
