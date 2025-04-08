@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="hospital-health-document" />
         <module name="hospital-estimate" />
         <module name="hospital-discharge-service" />
         <module name="hospital-ordermanagement" />
