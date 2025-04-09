@@ -1,6 +1,7 @@
 package com.uutrunk.hospitallogin.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -23,9 +24,9 @@ public class User {
 
     private String status;
 
+    @TableField(value = "create_time")
     private Date createTime;
 
-    private Long creatorId;
-
+    @TableField(value = "phone_number")
     private String phoneNumber;
 }

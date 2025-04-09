@@ -11,5 +11,11 @@ server:
   port: 8080
 jwt:
   expiration: 86400000
-  secret: your_secure_secret_key
-
+  secret: DLlfNAaGhUlDljfxvLnUKNZeAuWni/HRTP+6j1GyGKdiC4JH8vpoBP5bEd+92U7GMEQtM2+HEqv9McthVqzB9g==
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hospital?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: lmx175586
+adminPassword: lmx175586

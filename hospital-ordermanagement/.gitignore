@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 模板 ###
+/医嘱管理模块.md

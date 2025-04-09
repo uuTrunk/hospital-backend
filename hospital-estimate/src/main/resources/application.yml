@@ -3,8 +3,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     name: defaultDataSource
     url: jdbc:mysql://localhost:3306/blue?serverTimezone=UTC
-    username: '***'
-    password: '***'
+    username: root
+    password: lmx175586
 dubbo:
   application:
     logger: slf4j

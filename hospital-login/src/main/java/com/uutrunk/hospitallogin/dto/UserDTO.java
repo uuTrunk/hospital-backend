@@ -11,6 +11,7 @@ public class UserDTO {
     private String password;
     private String role;
     private String name;
+    private String adminPassword;
 
     // 从实体类转换的静态方法
     public static UserDTO fromEntity(User user) {

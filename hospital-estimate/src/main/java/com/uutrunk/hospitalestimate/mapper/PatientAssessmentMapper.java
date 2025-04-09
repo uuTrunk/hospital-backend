@@ -1,7 +1,7 @@
 package com.uutrunk.hospitalestimate.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.uutrunk.hospitalestimate.POJO.PatientAssessment;
+import com.uutrunk.hospitalestimate.pojo.PatientAssessment;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
