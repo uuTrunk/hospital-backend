@@ -15,4 +15,20 @@ public class DiagnosisDict {
 
     @Column(name = "diagnosis_name", nullable = false, length = 100, unique = true)
     private String diagnosisName; // 诊断名称（如高血压、上呼吸道感染）
+
+    public Integer getDiagnosisId() {
+        return diagnosisId;
+    }
+
+    public void setDiagnosisId(Integer diagnosisId) {
+        this.diagnosisId = diagnosisId;
+    }
+
+    public String getDiagnosisName() {
+        return diagnosisName;
+    }
+
+    public void setDiagnosisName(String diagnosisName) {
+        this.diagnosisName = diagnosisName;
+    }
 }

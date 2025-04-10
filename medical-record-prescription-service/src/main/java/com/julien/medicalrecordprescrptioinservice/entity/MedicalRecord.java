@@ -41,4 +41,86 @@ public class MedicalRecord {
 
     @Column(name = "treatment_opinion", columnDefinition = "TEXT")
     private String treatmentOpinion; // 处理意见
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
+
+    public PatientInfo getPatientInfo() {
+        return patientInfo;
+    }
+
+    public void setPatientInfo(PatientInfo patientInfo) {
+        this.patientInfo = patientInfo;
+    }
+
+    public DoctorInfo getDoctorInfo() {
+        return doctorInfo;
+    }
+
+    public void setDoctorInfo(DoctorInfo doctorInfo) {
+        this.doctorInfo = doctorInfo;
+    }
+
+    public LocalDateTime getVisitDate() {
+        return visitDate;
+    }
+
+    public void setVisitDate(LocalDateTime visitDate) {
+        this.visitDate = visitDate;
+    }
+
+    public String getChiefComplaint() {
+        return chiefComplaint;
+    }
+
+    public void setChiefComplaint(String chiefComplaint) {
+        this.chiefComplaint = chiefComplaint;
+    }
+
+    public String getPresentIllness() {
+        return presentIllness;
+    }
+
+    public void setPresentIllness(String presentIllness) {
+        this.presentIllness = presentIllness;
+    }
+
+    public String getPastIllness() {
+        return pastIllness;
+    }
+
+    public void setPastIllness(String pastIllness) {
+        this.pastIllness = pastIllness;
+    }
+
+    public String getPhysicalExam() {
+        return physicalExam;
+    }
+
+    public void setPhysicalExam(String physicalExam) {
+        this.physicalExam = physicalExam;
+    }
+
+    public String getAuxiliaryExam() {
+        return auxiliaryExam;
+    }
+
+    public void setAuxiliaryExam(String auxiliaryExam) {
+        this.auxiliaryExam = auxiliaryExam;
+    }
+
+    public String getTreatmentOpinion() {
+        return treatmentOpinion;
+    }
+
+    public void setTreatmentOpinion(String treatmentOpinion) {
+        this.treatmentOpinion = treatmentOpinion;
+    }
+
+
 }
