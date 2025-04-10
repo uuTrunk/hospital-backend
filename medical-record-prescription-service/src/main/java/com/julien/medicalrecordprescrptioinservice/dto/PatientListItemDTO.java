@@ -1,47 +1,50 @@
 package com.julien.medicalrecordprescrptioinservice.dto;
 
-public class PatientListItemResponse {
-    private Integer patientId; // 患者 ID
-    private String name; // 姓名
-    private String bedNumber; // 房间床位
-    private String admissionNumber; // 入院编号
+public class PatientListItemDTO {
+    private Integer patientId;
+    private String name;
+    private String bedNumber;
+    private String admissionNumber;
 
-    // Getter for patientId
+    public PatientListItemDTO() {
+        // 必须的无参构造函数
+    }
+
+    public PatientListItemDTO(Integer patientId, String name, String bedNumber, String admissionNumber) {
+        this.patientId = patientId;
+        this.name = name;
+        this.bedNumber = bedNumber;
+        this.admissionNumber = admissionNumber;
+    }
+
     public Integer getPatientId() {
         return patientId;
     }
 
-    // Setter for patientId
     public void setPatientId(Integer patientId) {
         this.patientId = patientId;
     }
 
-    // Getter for name
     public String getName() {
         return name;
     }
 
-    // Setter for name
     public void setName(String name) {
         this.name = name;
     }
 
-    // Getter for bedNumber
     public String getBedNumber() {
         return bedNumber;
     }
 
-    // Setter for bedNumber
     public void setBedNumber(String bedNumber) {
         this.bedNumber = bedNumber;
     }
 
-    // Getter for admissionNumber
     public String getAdmissionNumber() {
         return admissionNumber;
     }
 
-    // Setter for admissionNumber
     public void setAdmissionNumber(String admissionNumber) {
         this.admissionNumber = admissionNumber;
     }

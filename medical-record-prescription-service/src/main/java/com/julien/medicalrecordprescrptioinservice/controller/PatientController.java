@@ -1,13 +1,13 @@
 package com.julien.medicalrecordprescrptioinservice.controller;
 
-import com.julien.medicalrecordprescrptioinservice.dto.PatientListItemResponse;
+import com.julien.medicalrecordprescrptioinservice.dto.PatientListItemDTO;
 import com.julien.medicalrecordprescrptioinservice.service.PatientService;
-import com.julien.medicalrecordprescrptioinservice.vo.ApiResponse;
-import com.julien.medicalrecordprescrptioinservice.vo.ApiResponse.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.data.domain.Page;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/patient")
@@ -17,13 +17,23 @@ public class PatientController {
     private PatientService patientService;
 
     @GetMapping("/list")
-    public ApiResponse getPatientList(
+    public Map<String, Object> getPatientList(
             @RequestParam(required = false) String name_or_number,
             @RequestParam int page,
             @RequestParam int pageSize
     ) {
-        Page<PatientListItemResponse> resultPage = patientService.getPatientList(name_or_number, page, pageSize);
-        Data data = new Data(resultPage.getTotalElements(), resultPage.getContent());
-        return ApiResponse.success(data);
+        Page<PatientListItemDTO> resultPage = patientService.getPatients(name_or_number, page, pageSize);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+        response.put("message", "成功");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", resultPage.getTotalElements());
+        data.put("list", resultPage.getContent());
+
+        response.put("data", data);
+
+        return response;
     }
 }
