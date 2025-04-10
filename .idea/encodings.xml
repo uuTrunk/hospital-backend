@@ -4,5 +4,8 @@
     <file url="file://$PROJECT_DIR$/hospital-discharge-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hospital-estimate/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hospital-estimate/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/medical-prescription-service-mybatis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/medical-prescription-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/medical-record-prescription-service/src/main/java" charset="UTF-8" />
   </component>
 </project>
