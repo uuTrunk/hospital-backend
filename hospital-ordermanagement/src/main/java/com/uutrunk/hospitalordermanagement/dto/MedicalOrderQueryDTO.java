@@ -17,10 +17,4 @@ public class MedicalOrderQueryDTO {
     
     @Min(1)
     private Integer pageSize = 10;
-    
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startTimeStart;
-    
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startTimeEnd;
 }

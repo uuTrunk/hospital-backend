@@ -20,9 +20,9 @@ public class MedicalOrderController {
     private MedicalOrderService medicalOrderService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> create(@Valid @RequestBody MedicalOrderCreateDTO dto) {
-        MedicalOrderDTO result = medicalOrderService.create(dto);
-        return ResponseEntity.ok(ApiResponse.success(result));
+    public ResponseEntity<ApiResponse<String>> create(@RequestBody MedicalOrderCreateDTO dto) {
+        ApiResponse<String> response = ApiResponse.success(medicalOrderService.create(dto));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/detail")
@@ -37,10 +37,10 @@ public class MedicalOrderController {
         return ResponseEntity.ok(ApiResponse.success("医嘱修改成功"));
     }
 
-    @DeleteMapping("/void")
-    public ResponseEntity<ApiResponse<?>> voidOrder(@RequestParam("orderId") String orderId,
-                                                    @RequestParam("operatorId") Integer operatorId) {
-        medicalOrderService.voidOrder(orderId, operatorId);
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<?>> deleteOrder(@RequestParam("orderId") String orderId,
+                                                    @RequestParam("doctorId") Integer doctorId) {
+        medicalOrderService.deleteOrder(orderId, doctorId);
         return ResponseEntity.ok(ApiResponse.success("医嘱作废成功"));
     }
 
@@ -57,6 +57,7 @@ public class MedicalOrderController {
         query.setPatientName(patientName);
         query.setPage(page);
         query.setPageSize(pageSize);
+        System.out.println(query);
         IPage<MedicalOrderDTO> pageResult = medicalOrderService.list(query);
         return ResponseEntity.ok(ApiResponse.success(pageResult));
     }

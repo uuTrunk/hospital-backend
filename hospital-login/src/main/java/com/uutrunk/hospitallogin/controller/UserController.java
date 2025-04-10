@@ -12,6 +12,7 @@ import com.uutrunk.hospitallogin.common.ApiResponse;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
@@ -28,39 +29,43 @@ public class UserController {
 
     // 登录接口
     @PostMapping("/login")
-    public ApiResponse<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
-        return (ApiResponse<LoginResponseDTO>) userService.login(loginRequestDTO);
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+        return ResponseEntity.ok(ApiResponse.success(userService.login(loginRequestDTO)));
     }
 
     // 获取权限接口
     @GetMapping("/get-permissions")
-    public ApiResponse<RolePermissionDTO> getPermissions(@RequestParam("token") String token) {
+    public ResponseEntity<ApiResponse<RolePermissionDTO>> getPermissions(@RequestParam("token") String token) {
         String role = parseRoleFromToken(token);
-        return (ApiResponse<RolePermissionDTO>) userService.getPermissions(role);
+        return ResponseEntity.ok(ApiResponse.success(userService.getPermissions(role)));
     }
 
     // 注册接口
     @PostMapping("/register")
-    public ApiResponse<?> register(@RequestBody UserDTO dto) {
-        return userService.createUser(dto);
+    public ResponseEntity<ApiResponse<Void>> register(@RequestBody UserDTO dto) {
+        userService.createUser(dto);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     // 修改用户状态接口
     @PutMapping("/update-user-status")
-    public ApiResponse<?> updateUserStatus(@RequestBody UpdateUserStatusDTO dto) {
-        return userService.updateUserStatus(dto);
+    public ResponseEntity<ApiResponse<Void>> updateUserStatus(@RequestBody UpdateUserStatusDTO dto) {
+        userService.updateUserStatus(dto);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     // 获取验证码接口
     @PostMapping("/get-verification-code")
-    public ApiResponse<?> sendVerificationCode(@RequestBody VerificationCodeRequestDTO dto) {
-        return userService.sendVerificationCode(dto);
+    public ResponseEntity<ApiResponse<Void>> sendVerificationCode(@RequestBody VerificationCodeRequestDTO dto) {
+        userService.sendVerificationCode(dto);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     // 重置密码接口
     @PostMapping("/reset-password")
-    public ApiResponse<?> resetPassword(@RequestBody ResetPasswordDTO dto) {
-        return userService.resetPassword(dto);
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@RequestBody ResetPasswordDTO dto) {
+        userService.resetPassword(dto);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     // JWT解析辅助方法

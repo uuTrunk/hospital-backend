@@ -7,6 +7,7 @@ import com.uutrunk.hospitalhealthdocument.dto.*;
 import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,49 +24,49 @@ public class HealthRecordController {
 
     // 健康档案列表查询接口
     @GetMapping("/list")
-    public ApiResponse<Page<HealthRecordDTO>> listHealthRecords(
+    public ResponseEntity<ApiResponse<Page<HealthRecordDTO>>> listHealthRecords(
         @Valid @ModelAttribute HealthRecordQueryDTO queryDTO) {
-        return healthRecordService.listHealthRecords(queryDTO);
+        return ResponseEntity.ok(ApiResponse.success(healthRecordService.listHealthRecords(queryDTO)));
     }
 
     // 健康档案详情查询接口
     @GetMapping("/detail/{recordId}")
-    public ApiResponse<HealthRecordDetailDTO> getDetail(
+    public ResponseEntity<ApiResponse<HealthRecordDetailDTO>> getDetail(
         @PathVariable String recordId) {
-        return healthRecordService.getDetail(recordId);
+        return ResponseEntity.ok(ApiResponse.success(healthRecordService.getDetail(recordId)));
     }
 
     // 创建健康档案接口
     @PostMapping("/create")
-    public ApiResponse<String> createHealthRecord(
+    public ResponseEntity<ApiResponse<String>> createHealthRecord(
         @Valid @RequestBody HealthRecordCreateDTO createDTO) {
-        return healthRecordService.createHealthRecord(createDTO);
+        return ResponseEntity.ok(ApiResponse.success(healthRecordService.createHealthRecord(createDTO)));
     }
 
     // 更新健康档案接口
     @PutMapping("/update")
-    public ApiResponse<Void> updateHealthRecord(
+    public ResponseEntity<ApiResponse<Void>> updateHealthRecord(
         @RequestParam String recordId,
         @RequestBody Map<String, Object> updateContent) {
-        return healthRecordService.updateHealthRecord(recordId, updateContent);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     // 病史管理接口
     @PostMapping("/history")
-    public ApiResponse<Void> addHistory(
+    public ResponseEntity<ApiResponse<Void>> addHistory(
         @Valid @RequestBody AdmissionHistoryCreateDTO historyDTO) {
-        return healthRecordService.addHistory(historyDTO);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @PutMapping("/history")
-    public ApiResponse<Void> updateHistory(
+    public ResponseEntity<ApiResponse<Void>> updateHistory(
         @Valid @RequestBody AdmissionHistoryUpdateDTO historyDTO) {
-        return healthRecordService.updateHistory(historyDTO);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @DeleteMapping("/history/{historyId}")
-    public ApiResponse<Void> deleteHistory(
+    public ResponseEntity<ApiResponse<Void>> deleteHistory(
         @PathVariable @NonNull Integer historyId) {
-        return healthRecordService.deleteHistory(historyId);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 }

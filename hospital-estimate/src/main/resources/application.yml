@@ -15,4 +15,4 @@ dubbo:
     name: tri
     port: 50051
 server:
-  port: 8080
+  port: 8082

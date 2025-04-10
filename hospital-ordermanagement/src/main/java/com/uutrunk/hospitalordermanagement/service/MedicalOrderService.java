@@ -13,16 +13,16 @@ public interface MedicalOrderService {
     /**
      * 创建医嘱
      * @param dto 医嘱创建参数
-     * @return 创建的医嘱信息
+     * @return 创建的医嘱Id
      */
-    MedicalOrderDTO create(MedicalOrderCreateDTO dto);
+    String create(MedicalOrderCreateDTO dto);
 
     /**
      * 更新医嘱信息
      * @param dto 医嘱更新参数
      * @return 更新结果
      */
-    boolean update(MedicalOrderUpdateDTO dto);
+    void update(MedicalOrderUpdateDTO dto);
 
     /**
      * 作废医嘱
@@ -30,7 +30,7 @@ public interface MedicalOrderService {
      * @param operatorId 操作人ID
      * @return 作废结果
      */
-    boolean voidOrder(String orderId, Integer operatorId);
+    void deleteOrder(String orderId, Integer operatorId);
 
     /**
      * 获取医嘱详情

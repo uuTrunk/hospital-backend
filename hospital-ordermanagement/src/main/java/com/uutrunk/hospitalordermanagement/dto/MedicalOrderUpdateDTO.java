@@ -1,5 +1,7 @@
 package com.uutrunk.hospitalordermanagement.dto;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class MedicalOrderUpdateDTO {
+    @TableId(value = "order_id", type = IdType.AUTO)
     @NotBlank(message = "医嘱ID不能为空")
     private String orderId;
     
@@ -15,8 +18,5 @@ public class MedicalOrderUpdateDTO {
     private String dosage;
     private String usage;
     private String frequency;
-    private int doctorId;
-    
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startTime;
+    private Integer doctorId;
 }

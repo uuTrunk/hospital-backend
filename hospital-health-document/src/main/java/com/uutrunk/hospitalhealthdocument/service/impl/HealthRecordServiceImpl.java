@@ -43,7 +43,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
     
     @Transactional
     @Override
-    public ApiResponse<String> createHealthRecord(HealthRecordCreateDTO createDTO) {
+    public String createHealthRecord(HealthRecordCreateDTO createDTO) {
         // 参数校验
         if (createDTO.getPatientId() == null) {
             throw new IllegalArgumentException("患者ID不能为空");
@@ -64,14 +64,15 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         main.setPatientId(createDTO.getPatientId());
         main.setCreatedDoctorId(createDTO.getCreateDoctorId());
         main.setCreateTime(LocalDateTime.now());
+        main.setUpdateTime(LocalDateTime.now());
         main.setStatus("待完善");
         healthRecordMainMapper.insert(main);
         
-        return ApiResponse.success(recordId);
+        return recordId;
     }
     
     @Override
-    public ApiResponse<HealthRecordDetailDTO> getDetail(String recordId) {
+    public HealthRecordDetailDTO getDetail(String recordId) {
         // 查询主表信息
         HealthRecordMain main = healthRecordMainMapper.selectById(recordId);
         if (main == null) {
@@ -102,11 +103,11 @@ public class HealthRecordServiceImpl implements HealthRecordService {
             .map(DiagnosisPlanDTO::fromEntity)
             .collect(Collectors.toList()));
         
-        return ApiResponse.success(detail);
+        return detail;
     }
     
     @Override
-    public ApiResponse<Page<HealthRecordDTO>> listHealthRecords(HealthRecordQueryDTO queryDTO) {
+    public Page<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO) {
         Page<HealthRecordMain> page = new Page<>(queryDTO.getPage(), queryDTO.getPageSize());
         
         QueryWrapper<HealthRecordMain> wrapper = new QueryWrapper<>();
@@ -128,12 +129,12 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         Page<HealthRecordDTO> dtoPage = new Page<>(page.getCurrent(), page.getSize(), result.getTotal());
         dtoPage.setRecords(dtos);
         
-        return ApiResponse.success(dtoPage);
+        return dtoPage;
     }
     
     @Transactional
     @Override
-    public ApiResponse<Void> updateHealthRecord(String recordId, Map<String, Object> updateContent) {
+    public void updateHealthRecord(String recordId, Map<String, Object> updateContent) {
         // 校验档案是否存在
         HealthRecordMain main = healthRecordMainMapper.selectById(recordId);
         if (main == null) {
@@ -163,40 +164,40 @@ public class HealthRecordServiceImpl implements HealthRecordService {
             healthRecordMainMapper.updateById(main);
         }
         
-        return ApiResponse.success();
+        return;
     }
     
     @Transactional
     @Override
-    public ApiResponse<Void> addHistory(AdmissionHistoryCreateDTO historyDTO) {
+    public void addHistory(AdmissionHistoryCreateDTO historyDTO) {
         AdmissionHistory history = new AdmissionHistory();
         history.setRecordId(historyDTO.getRecordId());
         history.setTypeId(historyDTO.getTypeId());
         history.setContent(historyDTO.getContent());
         admissionHistoryMapper.insert(history);
-        return ApiResponse.success();
+        return;
     }
     
     @Transactional
     @Override
-    public ApiResponse<Void> updateHistory(AdmissionHistoryUpdateDTO historyDTO) {
+    public void updateHistory(AdmissionHistoryUpdateDTO historyDTO) {
         AdmissionHistory history = admissionHistoryMapper.selectById(historyDTO.getHistoryId());
         if (history == null) {
             throw new EntityNotFoundException("病史记录不存在");
         }
         history.setContent(historyDTO.getContent());
         admissionHistoryMapper.updateById(history);
-        return ApiResponse.success();
+        return;
     }
     
     @Transactional
     @Override
-    public ApiResponse<Void> deleteHistory(@NonNull Integer historyId) {
+    public void deleteHistory(@NonNull Integer historyId) {
         AdmissionHistory history = admissionHistoryMapper.selectById(historyId);
         if (history == null) {
             throw new EntityNotFoundException("病史记录不存在");
         }
         admissionHistoryMapper.deleteById(historyId);
-        return ApiResponse.success();
+        return;
     }
 }

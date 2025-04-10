@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 8083
 dubbo:
   application:
     logger: slf4j
     name: HospitalOrdermanagementApplication
   registry:
-    address: zookeeper://${zookeeper.address:127.0.0.1}:2181
+    address: nacos://${nacos.address:127.0.0.1}:8848
   protocol:
     name: tri
     port: 50051

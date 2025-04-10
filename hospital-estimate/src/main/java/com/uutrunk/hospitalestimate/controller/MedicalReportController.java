@@ -21,12 +21,9 @@ public class MedicalReportController {
     public ResponseEntity<ApiResponse<Map<String, Object>>> uploadMedicalReport(
             @RequestParam("assessment_id") int assessmentId,
             @RequestParam("report_type") String reportType,
-            @RequestParam("file") MultipartFile file) {
-        try {
-            Map<String, Object> filePath = medicalReportService.uploadMedicalReport(assessmentId, reportType, file);
-            return ResponseEntity.ok(ApiResponse.success(filePath));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            @RequestParam("file") MultipartFile file) throws Exception {
+        System.out.println("成功");
+        Map<String, Object> filePath = medicalReportService.uploadMedicalReport(assessmentId, reportType, file);
+        return ResponseEntity.ok(ApiResponse.success(filePath));
     }
 }

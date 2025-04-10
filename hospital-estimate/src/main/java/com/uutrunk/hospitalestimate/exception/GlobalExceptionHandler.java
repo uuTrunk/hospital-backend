@@ -3,6 +3,7 @@ package com.uutrunk.hospitalestimate.exception;
 import com.uutrunk.hospitalestimate.common.ApiResponse;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,5 +32,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(UploadException.class)
+    public ResponseEntity<ApiResponse<?>> handleUploadException(UploadException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage()));
     }
 }

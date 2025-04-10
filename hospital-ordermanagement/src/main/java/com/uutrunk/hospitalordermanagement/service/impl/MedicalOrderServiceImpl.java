@@ -4,22 +4,26 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.uutrunk.hospitalordermanagement.Enum.Status;
 import com.uutrunk.hospitalordermanagement.dto.MedicalOrderCreateDTO;
 import com.uutrunk.hospitalordermanagement.dto.MedicalOrderDTO;
 import com.uutrunk.hospitalordermanagement.dto.MedicalOrderQueryDTO;
 import com.uutrunk.hospitalordermanagement.dto.MedicalOrderUpdateDTO;
-import com.uutrunk.hospitalordermanagement.mapper.LongTermOrderMapper;
-import com.uutrunk.hospitalordermanagement.mapper.MedicalOrderMainMapper;
-import com.uutrunk.hospitalordermanagement.mapper.OrderOperationLogMapper;
-import com.uutrunk.hospitalordermanagement.mapper.TemporaryOrderMapper;
+import com.uutrunk.hospitalordermanagement.exception.BeanUtilsException;
+import com.uutrunk.hospitalordermanagement.exception.DatabaseException;
+import com.uutrunk.hospitalordermanagement.exception.OrderNotExistException;
+import com.uutrunk.hospitalordermanagement.exception.TypeUnknownException;
+import com.uutrunk.hospitalordermanagement.mapper.*;
 import com.uutrunk.hospitalordermanagement.pojo.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
+import lombok.experimental.Accessors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,16 +42,39 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     @Autowired
     private OrderOperationLogMapper logMapper;
 
+    @Autowired
+    private PatientInfoMapper patientInfoMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public MedicalOrderDTO create(MedicalOrderCreateDTO dto) {
-        // 生成唯一订单ID
-        String orderId = UUID.randomUUID().toString().replace("-", "");
+    public String create(MedicalOrderCreateDTO dto) {
+
         MedicalOrderMain main = new MedicalOrderMain();
-        BeanUtils.copyProperties(dto, main); // 替换BeanCopyUtil
-        main.setOrderId(orderId);
-        main.setSendTime(LocalDateTime.now());
-        mainMapper.insert(main);
+        try {
+            main.setOrderId(UUID.randomUUID().toString().replace("-", ""));
+            main.setPatientId(dto.getPatientId());
+            main.setDoctorId(dto.getDoctorId());
+            main.setOrderType(dto.getOrderType());
+            main.setContent(dto.getContent());
+            main.setDosage(dto.getDosage());
+            main.setMedicalUsage(dto.getUsage());
+            main.setFrequency(dto.getFrequency());
+            main.setSendingTime(LocalDateTime.now());
+            main.setOrderStatus(Status.valueOf("待校对"));
+            main.setStartingTime(dto.getStartTime());
+        }
+        catch (RuntimeException e) {
+            throw new BeanUtilsException("Bean拷贝失败");
+        }
+
+        try {
+            System.out.println(main);
+            mainMapper.insert(main);
+        }
+        catch (RuntimeException e) {
+            throw new DatabaseException("创建医嘱主表失败");
+        }
+        String orderId = main.getOrderId();
 
         // 保存子表信息
         if ("临时".equals(dto.getOrderType())) {
@@ -55,73 +82,68 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
             temp.setOrderId(orderId);
             temp.setValidityPeriod(dto.getValidityPeriod());
             temporaryMapper.insert(temp);
-        } else {
+        }
+        else if("长期".equals(dto.getOrderType())){
             LongTermOrder longTerm = new LongTermOrder();
             longTerm.setOrderId(orderId);
             longTerm.setStopTime(dto.getStopTime());
             longMapper.insert(longTerm);
         }
+        else {
+            throw new TypeUnknownException("未知的医嘱类型");
+        }
 
         // 记录操作日志
         logOperation(orderId, "创建", dto.getDoctorId());
 
-        MedicalOrderDTO result = new MedicalOrderDTO();
-        BeanUtils.copyProperties(main, result); // 替换BeanCopyUtil
-        return result;
+        return orderId;
     }
 
     @Override
-    public boolean update(MedicalOrderUpdateDTO dto) {
+    public void update(MedicalOrderUpdateDTO dto) {
         // 校验状态是否允许修改
         MedicalOrderMain existing = mainMapper.selectById(dto.getOrderId());
         if (existing == null) {
-            throw new RuntimeException("医嘱不存在");
-        }
-        if (existing.getStatus().equals("已执行") || existing.getStatus().equals("已作废")) {
-            throw new RuntimeException("该状态不允许修改");
+            throw new OrderNotExistException("医嘱不存在");
         }
 
         // 更新主表信息
         MedicalOrderMain updateMain = new MedicalOrderMain();
         BeanUtils.copyProperties(dto, updateMain); // 替换BeanCopyUtil
-        updateMain.setOrderId(dto.getOrderId());
         mainMapper.updateById(updateMain);
 
         // 记录操作日志
         logOperation(dto.getOrderId(), "修改", dto.getDoctorId());
 
-        return true;
+        return;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean voidOrder(String orderId, Integer operatorId) {
+    public void deleteOrder(String orderId, Integer doctorId) {
         // 状态校验
         MedicalOrderMain existing = mainMapper.selectById(orderId);
         if (existing == null) {
-            throw new RuntimeException("医嘱不存在");
-        }
-        if (existing.getStatus().equals("已执行") || existing.getStatus().equals("已作废")) {
-            throw new RuntimeException("该状态不允许作废");
+            throw new OrderNotExistException("医嘱不存在");
         }
 
         // 更新状态为已作废
         MedicalOrderMain main = new MedicalOrderMain();
         main.setOrderId(orderId);
-        main.setStatus("已作废");
+        main.setOrderStatus(Status.valueOf("已作废"));
         mainMapper.updateById(main);
 
         // 记录操作日志
-        logOperation(orderId, "作废", operatorId);
+        logOperation(orderId, "作废", doctorId);
 
-        return true;
+        return;
     }
 
     @Override
     public MedicalOrderDTO getById(String orderId) {
         MedicalOrderMain main = mainMapper.selectById(orderId);
         if (main == null) {
-            throw new RuntimeException("医嘱不存在");
+            throw new OrderNotExistException("医嘱不存在");
         }
 
         MedicalOrderDTO dto = new MedicalOrderDTO();
@@ -131,13 +153,13 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         if ("临时".equals(main.getOrderType())) {
             TemporaryOrder temp = temporaryMapper.selectById(orderId);
             if (temp == null) {
-                throw new RuntimeException("临时医嘱子表记录不存在");
+                throw new OrderNotExistException("临时医嘱子表记录不存在");
             }
             dto.setValidityPeriod(temp.getValidityPeriod());
         } else {
             LongTermOrder longTerm = longMapper.selectById(orderId);
             if (longTerm == null) {
-                throw new RuntimeException("长期医嘱子表记录不存在");
+                throw new OrderNotExistException("长期医嘱子表记录不存在");
             }
             dto.setStopTime(longTerm.getStopTime());
         }
@@ -156,9 +178,22 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
             wrapper.eq("order_type", queryDTO.getOrderType());
         }
         if (queryDTO.getStatus() != null) {
-            wrapper.eq("status", queryDTO.getStatus());
+            wrapper.eq("order_status", queryDTO.getStatus());
         }
+        // 根据 patientName 模糊查询
+        if (queryDTO.getPatientName() != null && !queryDTO.getPatientName().trim().isEmpty()) {
+            QueryWrapper<PatientInfo> patientWrapper = new QueryWrapper<>();
+            patientWrapper.like("name", queryDTO.getPatientName());
+            List<PatientInfo> patients = patientInfoMapper.selectList(patientWrapper);
+            List<Integer> patientIds = patients.stream()
+                    .map(PatientInfo::getPatientId)
+                    .collect(Collectors.toList());
 
+            if (!patientIds.isEmpty()) {
+                wrapper.in("patient_id", patientIds);
+            }
+        }
+        System.out.println(wrapper.toString());
 
         // 执行分页查询
         IPage<MedicalOrderMain> mainPage = mainMapper.selectPage(page, wrapper);
@@ -170,6 +205,7 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         dtoPage.setRecords(mainPage.getRecords().stream()
             .map(main -> {
                 MedicalOrderDTO dto = new MedicalOrderDTO();
+                System.out.println(dto);
                 BeanUtils.copyProperties(main, dto);
                 return dto;
             }).collect(Collectors.toList()));
