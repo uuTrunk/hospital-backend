@@ -1,6 +1,7 @@
 package com.uutrunk.hospitalordermanagement.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.uutrunk.hospitalordermanagement.Enum.OrderType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -17,8 +18,7 @@ public class MedicalOrderCreateDTO {
     private Integer doctorId;
     
     @NotBlank(message = "医嘱类型不能为空")
-    @Pattern(regexp = "临时|长期", message = "类型必须是临时/长期")
-    private String orderType;
+    private OrderType orderType;
     
     @NotBlank(message = "医嘱内容不能为空")
     private String content;

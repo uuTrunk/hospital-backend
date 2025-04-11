@@ -3,11 +3,10 @@ package com.uutrunk.hospitalordermanagement.pojo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.uutrunk.hospitalordermanagement.Enum.OrderType;
 import com.uutrunk.hospitalordermanagement.Enum.Status;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,7 +18,7 @@ public class MedicalOrderMain {
     @TableField(value = "doctor_id")
     private Integer doctorId;
     @TableField(value = "order_type")
-    private String orderType; // "临时"/"长期"
+    private OrderType orderType; // "临时"/"长期"
     private String content;
     private String dosage;
     @TableField(value = "medical_usage")

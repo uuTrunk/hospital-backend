@@ -1,14 +1,11 @@
 package com.uutrunk.hospitalordermanagement.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.uutrunk.hospitalordermanagement.Enum.OrderType;
 import com.uutrunk.hospitalordermanagement.Enum.Status;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderCreateDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderQueryDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderUpdateDTO;
+import com.uutrunk.hospitalordermanagement.dto.*;
 import com.uutrunk.hospitalordermanagement.exception.BeanUtilsException;
 import com.uutrunk.hospitalordermanagement.exception.DatabaseException;
 import com.uutrunk.hospitalordermanagement.exception.OrderNotExistException;
@@ -16,7 +13,6 @@ import com.uutrunk.hospitalordermanagement.exception.TypeUnknownException;
 import com.uutrunk.hospitalordermanagement.mapper.*;
 import com.uutrunk.hospitalordermanagement.pojo.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
-import lombok.experimental.Accessors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,6 +41,8 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
 
     @Autowired
     private PatientInfoMapper patientInfoMapper;
+    @Autowired
+    private DoctorInfoMapper doctorInfoMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -168,50 +167,60 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     }
 
     @Override
-    public IPage<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO) {
+    public PageResult<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO) {
         // 创建分页对象
         Page<MedicalOrderMain> page = new Page<>(queryDTO.getPage(), queryDTO.getPageSize());
-        
-        // 构建查询条件
+
+        // 准备参数
+        List<Integer> patientIds = getPatientIdsByQuery(queryDTO);
+
         QueryWrapper<MedicalOrderMain> wrapper = new QueryWrapper<>();
-        if (queryDTO.getOrderType() != null) {
-            wrapper.eq("order_type", queryDTO.getOrderType());
+        if (patientIds != null && !patientIds.isEmpty()) {
+            wrapper.in("patient_id", patientIds);
         }
-        if (queryDTO.getStatus() != null) {
-            wrapper.eq("order_status", queryDTO.getStatus());
-        }
-        // 根据 patientName 模糊查询
-        if (queryDTO.getPatientName() != null && !queryDTO.getPatientName().trim().isEmpty()) {
-            QueryWrapper<PatientInfo> patientWrapper = new QueryWrapper<>();
-            patientWrapper.like("name", queryDTO.getPatientName());
-            List<PatientInfo> patients = patientInfoMapper.selectList(patientWrapper);
-            List<Integer> patientIds = patients.stream()
-                    .map(PatientInfo::getPatientId)
-                    .collect(Collectors.toList());
-
-            if (!patientIds.isEmpty()) {
-                wrapper.in("patient_id", patientIds);
-            }
-        }
-        System.out.println(wrapper.toString());
-
-        // 执行分页查询
         IPage<MedicalOrderMain> mainPage = mainMapper.selectPage(page, wrapper);
-        
-        // 转换为DTO
-        IPage<MedicalOrderDTO> dtoPage = new Page<>();
-        dtoPage.setPages(mainPage.getPages());
-        dtoPage.setTotal(mainPage.getTotal());
-        dtoPage.setRecords(mainPage.getRecords().stream()
-            .map(main -> {
-                MedicalOrderDTO dto = new MedicalOrderDTO();
-                System.out.println(dto);
-                BeanUtils.copyProperties(main, dto);
-                return dto;
-            }).collect(Collectors.toList()));
-        
-        return dtoPage;
+
+
+        // 转换DTO
+        List<MedicalOrderDTO> dtoList = mainPage.getRecords().stream()
+                .map(main -> {
+                    MedicalOrderDTO dto = new MedicalOrderDTO();
+                    dto = dto.fromMainEntity(main);
+                    if(main.getOrderType().equals(OrderType.长期)) {
+                        LongTermOrder longTerm = longMapper.selectById(main.getOrderId());
+                        dto.setStopTime(longTerm.getStopTime());
+                    }
+                    else if(main.getOrderType().equals(OrderType.临时)) {
+                        TemporaryOrder temp = temporaryMapper.selectById(main.getOrderId());
+                        dto.setValidityPeriod(temp.getValidityPeriod());
+                    }
+                    PatientInfo patient = patientInfoMapper.selectById(main.getPatientId());
+                    dto.setPatientName(patient.getName());
+                    DoctorInfo doctor = doctorInfoMapper.selectById(main.getDoctorId());
+                    dto.setDoctorName(doctor.getName());
+                    return dto; // 直接使用关联查询的patientName和doctorName
+                })
+                .collect(Collectors.toList());
+
+        // 构建响应
+        PageResult<MedicalOrderDTO> result = new PageResult<>();
+        result.setTotal(mainPage.getTotal());
+        result.setList(dtoList);
+        return result;
     }
+
+    // 辅助方法：获取patient_id列表（可提取为工具方法）
+    private List<Integer> getPatientIdsByQuery(MedicalOrderQueryDTO queryDTO) {
+        if (queryDTO.getPatientName() == null || queryDTO.getPatientName().trim().isEmpty()) {
+            return null;
+        }
+        QueryWrapper<PatientInfo> wrapper = new QueryWrapper<>();
+        wrapper.like("name", queryDTO.getPatientName());
+        return patientInfoMapper.selectList(wrapper).stream()
+                .map(PatientInfo::getPatientId)
+                .collect(Collectors.toList());
+    }
+
 
     private void logOperation(String orderId, String type, Integer doctorId) {
         OrderOperationLog log = new OrderOperationLog();

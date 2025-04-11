@@ -1,11 +1,7 @@
 package com.uutrunk.hospitalordermanagement.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.uutrunk.hospitalordermanagement.common.ApiResponse;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderCreateDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderQueryDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderUpdateDTO;
+import com.uutrunk.hospitalordermanagement.dto.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +41,7 @@ public class MedicalOrderController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<?>> list(
+    public ResponseEntity<ApiResponse<PageResult<MedicalOrderDTO>>> list(
             @RequestParam(required = false) String orderType,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String patientName,
@@ -57,8 +53,8 @@ public class MedicalOrderController {
         query.setPatientName(patientName);
         query.setPage(page);
         query.setPageSize(pageSize);
-        System.out.println(query);
-        IPage<MedicalOrderDTO> pageResult = medicalOrderService.list(query);
+//        System.out.println(query);
+        PageResult<MedicalOrderDTO> pageResult = medicalOrderService.list(query);
         return ResponseEntity.ok(ApiResponse.success(pageResult));
     }
 

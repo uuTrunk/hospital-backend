@@ -5,11 +5,11 @@
 <mapper namespace="com.uutrunk.hospitalordermanagement.mapper.OrderOperationLogMapper">
 
     <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.OrderOperationLog">
-            <id property="log_id" column="log_id" />
-            <result property="order_id" column="order_id" />
-            <result property="operation_type" column="operation_type" />
-            <result property="operation_time" column="operation_time" />
-            <result property="operator_id" column="operator_id" />
+            <id property="logId" column="log_id" />
+            <result property="orderId" column="order_id" />
+            <result property="operationType" column="operation_type" />
+            <result property="operationTime" column="operation_time" />
+            <result property="doctorId" column="doctor_id" />
     </resultMap>
 
     <sql id="Base_Column_List">

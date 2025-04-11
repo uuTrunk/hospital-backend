@@ -1,12 +1,6 @@
 package com.uutrunk.hospitalordermanagement.service;
 
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderCreateDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderQueryDTO;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderUpdateDTO;
-import com.uutrunk.hospitalordermanagement.pojo.MedicalOrderMain;
+import com.uutrunk.hospitalordermanagement.dto.*;
 
 public interface MedicalOrderService {
 
@@ -44,5 +38,7 @@ public interface MedicalOrderService {
      * @param queryDTO 查询参数
      * @return 分页结果
      */
-    IPage<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO);
+    PageResult<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO);
+
+
 }

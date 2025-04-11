@@ -5,21 +5,46 @@
 <mapper namespace="com.uutrunk.hospitalordermanagement.mapper.MedicalOrderMainMapper">
 
     <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.MedicalOrderMain">
-            <id property="order_id" column="order_id" />
-            <result property="patient_id" column="patient_id" />
-            <result property="doctor_id" column="doctor_id" />
-            <result property="order_type" column="order_type" />
+            <id property="orderId" column="order_id" />
+            <result property="patientId" column="patient_id" />
+            <result property="doctorId" column="doctor_id" />
+            <result property="orderType" column="order_type" />
             <result property="content" column="content" />
             <result property="dosage" column="dosage" />
-            <result property="usage" column="usage" />
+            <result property="medicalUsage" column="medical_usage" />
             <result property="frequency" column="frequency" />
-            <result property="send_time" column="send_time" />
-            <result property="status" column="status" />
-            <result property="start_time" column="start_time" />
+            <result property="sendingTime" column="sending_time" />
+            <result property="orderStatus" column="order_status" />
+            <result property="startingTime" column="starting_time" />
     </resultMap>
 
     <sql id="Base_Column_List">
         order_id,patient_id,doctor_id,order_type,content,dosage,
         usage,frequency,send_time,status,start_time
     </sql>
+
+    <!-- 联表分页查询 -->
+    <select id="selectPageWithJoin" resultType="com.uutrunk.hospitalordermanagement.pojo.MedicalOrderMain">
+        SELECT
+        main.*,
+        patient.name AS patientName,
+        doctor.name AS doctorName
+        FROM medical_order_main AS main
+        LEFT JOIN patient_info AS patient ON main.patient_id = patient.patient_id
+        LEFT JOIN doctor_info AS doctor ON main.doctor_id = doctor.doctor_id
+        <where>
+            <if test="query.orderType != null">
+                AND main.order_type = #{query.orderType}
+            </if>
+            <if test="query.status != null">
+                AND main.order_status = #{query.status}
+            </if>
+            <if test="patientIds != null and patientIds.size() > 0">
+                AND main.patient_id IN
+                <foreach item="id" collection="patientIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>

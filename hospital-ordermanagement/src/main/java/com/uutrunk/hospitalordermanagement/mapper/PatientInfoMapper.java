@@ -5,4 +5,5 @@ import com.uutrunk.hospitalordermanagement.pojo.PatientInfo;
 
 public interface PatientInfoMapper extends BaseMapper<PatientInfo> {
     // 自动实现CRUD操作
+    public PatientInfo selectNameByPatientId();
 }

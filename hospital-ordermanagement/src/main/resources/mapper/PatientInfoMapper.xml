@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uutrunk.hospitalordermanagement.mapper.PatientInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.PatientInfo">
+            <id property="patientId" column="patient_id" />
+            <result property="name" column="name" />
+            <result property="gender" column="gender" />
+            <result property="idCard" column="id_card" />
+            <result property="birthDate" column="birth_date" />
+            <result property="registrationDate" column="registration_date" />
+            <result property="bedNumber" column="bed_number" />
+            <result property="careGrade" column="care_grade" />
+            <result property="admissionNumber" column="admission_number" />
+            <result property="insuranceType" column="insurance_type" />
+            <result property="insuranceId" column="insurance_id" />
+            <result property="contactName" column="contact_name" />
+            <result property="contactPhone" column="contact_phone" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        patient_id,name,gender,id_card,birth_date,registration_date,
+        bed_number,care_grade,admission_number,insurance_type,insurance_id,
+        contact_name,contact_phone
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from patient_info
+        where  patient_id = #{patientId} 
+    </select>
+    <select id="selectNameByPatientId" resultType="com.uutrunk.hospitalordermanagement.pojo.PatientInfo">
+        select name
+        from patient_info
+        where patient_id = #{patientId}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from patient_info
+        where  patient_id = #{patientId} 
+    </delete>
+    <insert id="insert" keyColumn="patient_id" keyProperty="patientId" parameterType="com.uutrunk.hospitalordermanagement.pojo.PatientInfo" useGeneratedKeys="true">
+        insert into patient_info
+        ( patient_id,name,gender,id_card,birth_date,registration_date,
+        bed_number,care_grade,admission_number,insurance_type,insurance_id,
+        contact_name,contact_phone)
+        values (#{patientId},#{name},#{gender},#{idCard},#{birthDate},#{registrationDate},
+        #{bedNumber},#{careGrade},#{admissionNumber},#{insuranceType},#{insuranceId},
+        #{contactName},#{contactPhone})
+    </insert>
+    <insert id="insertSelective" keyColumn="patient_id" keyProperty="patientId" parameterType="com.uutrunk.hospitalordermanagement.pojo.PatientInfo" useGeneratedKeys="true">
+        insert into patient_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="patientId != null">patient_id,</if>
+                <if test="name != null">name,</if>
+                <if test="gender != null">gender,</if>
+                <if test="idCard != null">id_card,</if>
+                <if test="birthDate != null">birth_date,</if>
+                <if test="registrationDate != null">registration_date,</if>
+                <if test="bedNumber != null">bed_number,</if>
+                <if test="careGrade != null">care_grade,</if>
+                <if test="admissionNumber != null">admission_number,</if>
+                <if test="insuranceType != null">insurance_type,</if>
+                <if test="insuranceId != null">insurance_id,</if>
+                <if test="contactName != null">contact_name,</if>
+                <if test="contactPhone != null">contact_phone,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="patientId != null">#{patientId},</if>
+                <if test="name != null">#{name},</if>
+                <if test="gender != null">#{gender},</if>
+                <if test="idCard != null">#{idCard},</if>
+                <if test="birthDate != null">#{birthDate},</if>
+                <if test="registrationDate != null">#{registrationDate},</if>
+                <if test="bedNumber != null">#{bedNumber},</if>
+                <if test="careGrade != null">#{careGrade},</if>
+                <if test="admissionNumber != null">#{admissionNumber},</if>
+                <if test="insuranceType != null">#{insuranceType},</if>
+                <if test="insuranceId != null">#{insuranceId},</if>
+                <if test="contactName != null">#{contactName},</if>
+                <if test="contactPhone != null">#{contactPhone},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.uutrunk.hospitalordermanagement.pojo.PatientInfo">
+        update patient_info
+        <set>
+                <if test="name != null">
+                    name = #{name},
+                </if>
+                <if test="gender != null">
+                    gender = #{gender},
+                </if>
+                <if test="idCard != null">
+                    id_card = #{idCard},
+                </if>
+                <if test="birthDate != null">
+                    birth_date = #{birthDate},
+                </if>
+                <if test="registrationDate != null">
+                    registration_date = #{registrationDate},
+                </if>
+                <if test="bedNumber != null">
+                    bed_number = #{bedNumber},
+                </if>
+                <if test="careGrade != null">
+                    care_grade = #{careGrade},
+                </if>
+                <if test="admissionNumber != null">
+                    admission_number = #{admissionNumber},
+                </if>
+                <if test="insuranceType != null">
+                    insurance_type = #{insuranceType},
+                </if>
+                <if test="insuranceId != null">
+                    insurance_id = #{insuranceId},
+                </if>
+                <if test="contactName != null">
+                    contact_name = #{contactName},
+                </if>
+                <if test="contactPhone != null">
+                    contact_phone = #{contactPhone},
+                </if>
+        </set>
+        where   patient_id = #{patientId} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.uutrunk.hospitalordermanagement.pojo.PatientInfo">
+        update patient_info
+        set 
+            name =  #{name},
+            gender =  #{gender},
+            id_card =  #{idCard},
+            birth_date =  #{birthDate},
+            registration_date =  #{registrationDate},
+            bed_number =  #{bedNumber},
+            care_grade =  #{careGrade},
+            admission_number =  #{admissionNumber},
+            insurance_type =  #{insuranceType},
+            insurance_id =  #{insuranceId},
+            contact_name =  #{contactName},
+            contact_phone =  #{contactPhone}
+        where   patient_id = #{patientId} 
+    </update>
+</mapper>
