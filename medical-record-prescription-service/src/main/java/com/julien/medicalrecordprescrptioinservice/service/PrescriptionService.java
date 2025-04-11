@@ -2,12 +2,14 @@ package com.julien.medicalrecordprescrptioinservice.service;
 
 import com.julien.medicalrecordprescrptioinservice.dto.PrescriptionCreateRequestDTO;
 import com.julien.medicalrecordprescrptioinservice.dto.PrescriptionDetailDTO;
+import com.julien.medicalrecordprescrptioinservice.dto.PrescriptionDetailResponseDTO;
 import com.julien.medicalrecordprescrptioinservice.entity.*;
 import com.julien.medicalrecordprescrptioinservice.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -61,4 +63,31 @@ public class PrescriptionService {
             prescriptionDetailRepository.save(detail);
         }
     }
+
+    public PrescriptionDetailResponseDTO getPrescriptionDetail(String prescriptionId) {
+        PrescriptionMain main = prescriptionMainRepository.findByPrescriptionId(prescriptionId)
+                .orElseThrow(() -> new RuntimeException("未找到处方"));
+
+        List<PrescriptionDetail> detailList = prescriptionDetailRepository.findByPrescriptionMain_PrescriptionId(prescriptionId);
+
+        PrescriptionDetailResponseDTO dto = new PrescriptionDetailResponseDTO();
+        dto.setPatientName(main.getPatientInfo().getName());
+        dto.setDoctorName(main.getDoctorInfo().getName());
+        dto.setDiagnosis(main.getDiagnosis());
+        dto.setPrescriptionDate(main.getPrescriptionDate());
+
+        List<PrescriptionDetailResponseDTO.PrescriptionDetailItem> items = detailList.stream().map(detail -> {
+            PrescriptionDetailResponseDTO.PrescriptionDetailItem item = new PrescriptionDetailResponseDTO.PrescriptionDetailItem();
+            item.setDrugName(detail.getDrugName());
+            item.setSpecification(detail.getSpecification());
+            item.setDosage(detail.getDosage());
+            item.setUsage(detail.getUsage());
+            return item;
+        }).toList();
+
+        dto.setDetailList(items);
+
+        return dto;
+    }
 }
+
