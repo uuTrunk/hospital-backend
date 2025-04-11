@@ -13,7 +13,8 @@ import com.uutrunk.hospitallogin.pojo.UserCreationLog;
 import com.uutrunk.hospitallogin.pojo.VerificationCode;
 import com.uutrunk.hospitallogin.service.UserService;
 import com.uutrunk.hospitallogin.util.PasswordUtil;
-import com.uutrunk.hospitallogin.common.ApiResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService {
         response.setRole(user.getRole());
 
         // 从配置读取Base64密钥并解码
-        Key key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 移除Base64解码
 
         // 生成JWT Token逻辑
         String token = Jwts.builder()
@@ -170,18 +171,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RolePermissionDTO getPermissions(String role) {
-        RolePermission rp = rolePermissionMapper.selectById(role);
-        if (rp == null) {
-            throw new UsernameNotFoundException("账户不存在");
+    public RolePermissionDTO getPermissions(String token) {
+        // 1. 解析Token获取用户信息
+        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 移除Base64解码
+        Jws<Claims> claimsJws;
+        try {
+            claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (Exception e) {
+            throw new InvalidTokenException("无效的Token");
         }
-        
+
+        // 2. 验证用户存在性
+        String userIdStr = claimsJws.getBody().getSubject();
+//        System.out.println(userIdStr);
+        User user = userMapper.selectById(Integer.valueOf(userIdStr));
+        System.out.println(user);
+//        System.out.println("success");
+        if (user == null) {
+            throw new UsernameNotFoundException("用户不存在");
+        }
+
+        // 3. 获取角色并查询权限
+        String role = user.getRole();
+        System.out.println(role);
+        if (role == null) {
+            throw new RoleNotFoundException("角色不存在");
+        }
+        String perimissions = rolePermissionMapper.selectOne(new QueryWrapper<RolePermission>()
+                .eq("role", role))
+                .getPermissions();
+        System.out.println("success");
+
+        // 4. 构建返回对象
         RolePermissionDTO dto = new RolePermissionDTO();
-        dto.setRole(rp.getRole());
-        dto.setPermissions(List.of(rp.getPermissions().split(",")));
-        
+        dto.setRole(role);
+        dto.setPermissions(List.of(perimissions.split(",")));
         return dto;
     }
+
 
     @Transactional
     @Override

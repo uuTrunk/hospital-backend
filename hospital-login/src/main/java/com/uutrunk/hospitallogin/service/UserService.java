@@ -7,7 +7,7 @@ public interface UserService {
     public UserDTO createUser(UserDTO dto);
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
     public void resetPassword(ResetPasswordDTO dto);
-    public RolePermissionDTO getPermissions(String role);
+    public RolePermissionDTO getPermissions(String token);
     public void updateUserStatus(UpdateUserStatusDTO dto);
     public void sendVerificationCode(VerificationCodeRequestDTO dto);
 }
