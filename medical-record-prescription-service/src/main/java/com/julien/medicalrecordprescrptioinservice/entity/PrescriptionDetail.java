@@ -26,8 +26,8 @@ public class PrescriptionDetail {
     @Column(name = "dosage", length = 50)
     private String dosage; // 单次剂量
 
-    @Column(name = "usage", length = 50)
-    private String usage; // 用法（如口服 (po)）
+    @Column(name = "`usage`", length = 50)
+    private String usage; // 用量，如口服
 
     @Column(name = "frequency", length = 50)
     private String frequency; // 频次（如每天 3 次 (td)）
