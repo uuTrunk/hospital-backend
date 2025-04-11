@@ -21,7 +21,7 @@ public class MedicalRecord {
     @JoinColumn(name = "doctor_id", referencedColumnName = "doctor_id")
     private DoctorInfo doctorInfo; // 关联医生 ID
 
-    @Column(name = "visit_date", nullable = false)
+    @Column(name = "visit_date")
     private LocalDateTime visitDate; // 就诊日期
 
     @Column(name = "chief_complaint", columnDefinition = "TEXT")
