@@ -23,7 +23,7 @@ public class HealthRecordController {
 
     // 健康档案列表查询接口
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<Page<HealthRecordDTO>>> listHealthRecords(
+    public ResponseEntity<ApiResponse<PageResult<HealthRecordDTO>>> listHealthRecords(
         @RequestBody HealthRecordQueryDTO queryDTO) {
         return ResponseEntity.ok(ApiResponse.success(healthRecordService.listHealthRecords(queryDTO)));
     }

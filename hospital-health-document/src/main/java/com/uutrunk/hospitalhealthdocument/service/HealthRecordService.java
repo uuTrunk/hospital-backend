@@ -9,7 +9,7 @@ import java.util.Map;
 // 新增文件：健康档案业务接口
 public interface HealthRecordService {
     // 健康档案列表查询
-    Page<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO);
+    PageResult<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO);
     
     // 健康档案详情查询
     HealthRecordDetailDTO getDetail(String recordId);

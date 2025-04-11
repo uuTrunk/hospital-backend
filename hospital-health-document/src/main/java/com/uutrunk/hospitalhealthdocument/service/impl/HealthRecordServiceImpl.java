@@ -2,10 +2,12 @@ package com.uutrunk.hospitalhealthdocument.service.impl;
 
 import com.alibaba.nacos.shaded.org.checkerframework.checker.nullness.qual.NonNull;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.uutrunk.hospitalhealthdocument.common.ApiResponse;
 import com.uutrunk.hospitalhealthdocument.convertor.AdmissionHistoryConvertor;
 import com.uutrunk.hospitalhealthdocument.convertor.DiagnosisPlanConvertor;
+import com.uutrunk.hospitalhealthdocument.convertor.HealthRecordConvertor;
 import com.uutrunk.hospitalhealthdocument.dto.*;
 import com.uutrunk.hospitalhealthdocument.exception.DatabaseException;
 import com.uutrunk.hospitalhealthdocument.mapper.*;
@@ -113,33 +115,49 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         
         return detail;
     }
-    
+
+    // 在HealthRecordServiceImpl中修改listHealthRecords方法
     @Override
-    public Page<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO) {
+    public PageResult<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO) {
+        // 创建分页对象
         Page<HealthRecordMain> page = new Page<>(queryDTO.getPage(), queryDTO.getPageSize());
-        
+
+        QueryWrapper<PatientInfo> patientWrapper = new QueryWrapper<>();
+        patientWrapper.like("patient_info.name", queryDTO.getPatientName());
+        List<Integer> patientIds = patientMapper.selectList(patientWrapper).stream()
+                .map(PatientInfo::getPatientId)
+                .collect(Collectors.toList());
+        // 构建查询条件
         QueryWrapper<HealthRecordMain> wrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(queryDTO.getPatientName())) {
-            wrapper.like("patient_info.name", queryDTO.getPatientName());
-        }
-        if (StringUtils.isNotBlank(queryDTO.getRecordStatus())) {
+        wrapper.in("patient_id", patientIds);
+        if (queryDTO.getRecordStatus() != null && !queryDTO.getRecordStatus().isEmpty()) {
             wrapper.eq("status", queryDTO.getRecordStatus());
         }
-        
-        // 执行分页查询（需要Mapper有联表查询实现）
-        Page<HealthRecordMain> result = healthRecordMainMapper.selectWithPatient(page, wrapper);
-        
-        // 转换DTO
-        List<HealthRecordDTO> dtos = result.getRecords().stream()
-            .map(HealthRecordDTO::fromEntity)
-            .collect(Collectors.toList());
-        
-        Page<HealthRecordDTO> dtoPage = new Page<>(page.getCurrent(), page.getSize(), result.getTotal());
-        dtoPage.setRecords(dtos);
-        
-        return dtoPage;
+
+        // 执行联表分页查询
+        IPage<HealthRecordMain> recordPage = healthRecordMainMapper.selectPage(page, wrapper);
+
+        // 转换DTO（确保selectWithPatient已包含patient_info关联数据）
+        List<HealthRecordDTO> dtoList = recordPage.getRecords().stream()
+                .map(main -> {
+                    HealthRecordDTO dto = HealthRecordConvertor.INSTANCE.toDTO(main);
+                    // 从联表结果中获取patient_info信息（需确保实体关联）
+                    PatientInfo patient = patientMapper.selectById(main.getPatientId()); // 假设实体有patient属性
+                    if (patient != null) {
+                        dto.setPatientName(patient.getName());
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        // 构建分页响应
+        PageResult<HealthRecordDTO> result = new PageResult<>();
+        result.setTotal(recordPage.getTotal());
+        result.setList(dtoList);
+        return result;
     }
-    
+
+
     @Transactional
     @Override
     public void updateHealthRecord(String recordId, Map<String, Object> updateContent) {
