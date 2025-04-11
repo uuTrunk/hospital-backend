@@ -36,5 +36,9 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-core:6.0.11" level="project" />
     <orderEntry type="library" name="Maven: com.mysql:mysql-connector-j:8.0.33" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:6.0.11" level="project" />
+    <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus-annotation:3.5.11" level="project" />
+    <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.19" level="project" />
+    <orderEntry type="library" name="Maven: org.mapstruct:mapstruct:1.5.5.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.15.2" level="project" />
   </component>
 </module>

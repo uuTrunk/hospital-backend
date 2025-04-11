@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 public class HealthRecordDTO {
     private String recordId;
     private Integer patientId;
-    private Integer createdDoctorId;
+    private String createDoctorName;
     private LocalDateTime createTime;
-    private String recordStatus;
+    private HealthRecordMain.Status recordStatus;
 
     public static HealthRecordDTO fromEntity(HealthRecordMain entity) {
         return new HealthRecordDTO()
             .setRecordId(entity.getRecordId())
             .setPatientId(entity.getPatientId()) // 需要确保关联对象已加载
-            .setCreatedDoctorId(entity.getCreatedDoctorId()) // 需要补充医生信息关联
+            .setCreateDoctorName(entity.getCreateDoctorName()) // 需要补充医生信息关联
             .setCreateTime(entity.getCreateTime())
             .setRecordStatus(entity.getStatus());
     }

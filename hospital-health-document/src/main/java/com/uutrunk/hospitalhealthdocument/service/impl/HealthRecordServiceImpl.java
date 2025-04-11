@@ -4,15 +4,12 @@ import com.alibaba.nacos.shaded.org.checkerframework.checker.nullness.qual.NonNu
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.uutrunk.hospitalhealthdocument.common.ApiResponse;
+import com.uutrunk.hospitalhealthdocument.convertor.AdmissionHistoryConvertor;
+import com.uutrunk.hospitalhealthdocument.convertor.DiagnosisPlanConvertor;
 import com.uutrunk.hospitalhealthdocument.dto.*;
-import com.uutrunk.hospitalhealthdocument.mapper.AdmissionHistoryMapper;
-import com.uutrunk.hospitalhealthdocument.mapper.DiagnosisPlanMapper;
-import com.uutrunk.hospitalhealthdocument.mapper.HealthRecordMainMapper;
-import com.uutrunk.hospitalhealthdocument.mapper.PatientMapper;
-import com.uutrunk.hospitalhealthdocument.pojo.AdmissionHistory;
-import com.uutrunk.hospitalhealthdocument.pojo.DiagnosisPlan;
-import com.uutrunk.hospitalhealthdocument.pojo.HealthRecordMain;
-import com.uutrunk.hospitalhealthdocument.pojo.PatientInfo;
+import com.uutrunk.hospitalhealthdocument.exception.DatabaseException;
+import com.uutrunk.hospitalhealthdocument.mapper.*;
+import com.uutrunk.hospitalhealthdocument.pojo.*;
 import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -48,25 +45,36 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         if (createDTO.getPatientId() == null) {
             throw new IllegalArgumentException("患者ID不能为空");
         }
-        
+//        System.out.println(createDTO.getPatientId());
         // 检查患者是否存在
         PatientInfo patient = patientMapper.selectById(createDTO.getPatientId());
-        if (patient == null) {
-            throw new EntityNotFoundException("患者不存在");
-        }
-        
-        // 生成健康档案ID
-        String recordId = UUID.randomUUID().toString();
-        
+//        System.out.println("查找患者后");
+        // 生成格式化 ID
+        String recordId = UUID.randomUUID().toString().replace("-", "");
+
         // 创建主表记录
         HealthRecordMain main = new HealthRecordMain();
         main.setRecordId(recordId);
         main.setPatientId(createDTO.getPatientId());
-        main.setCreatedDoctorId(createDTO.getCreateDoctorId());
+        main.setCreateDoctorName(createDTO.getCreateDoctorName());
         main.setCreateTime(LocalDateTime.now());
         main.setUpdateTime(LocalDateTime.now());
-        main.setStatus("待完善");
+        main.setStatus(HealthRecordMain.Status.待完善);
         healthRecordMainMapper.insert(main);
+
+        HealthRecordContentDTO content = createDTO.getBasicInfo();
+
+        //创建入院病史表
+        AdmissionHistoryDTO historyDTO = content.getAdmissionHistoryDTO();
+        AdmissionHistory history = AdmissionHistoryConvertor.INSTANCE.toEntity(historyDTO);
+        history.setRecordId(recordId);
+        admissionHistoryMapper.insert(history);
+
+        //创建诊断与计划表
+        DiagnosisPlanDTO planDTO = content.getDiagnosisPlanDTO();
+        DiagnosisPlan plan = DiagnosisPlanConvertor.INSTANCE.toEntity(planDTO);
+        plan.setRecordId(recordId);
+        diagnosisPlanMapper.insert(plan);
         
         return recordId;
     }
@@ -143,24 +151,24 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         
         // 更新主表字段
         if (updateContent.containsKey("status")) {
-            main.setStatus((String) updateContent.get("status"));
+            main.setStatus((HealthRecordMain.Status)updateContent.get("status"));
             healthRecordMainMapper.updateById(main);
         }
 
         if(updateContent.containsKey("patientId")) {
-            main.setStatus((String) updateContent.get("patientId"));
+            main.setPatientId((Integer) updateContent.get("patientId"));
             healthRecordMainMapper.updateById(main);
         }
         if(updateContent.containsKey("createdDoctorId")) {
-            main.setStatus((String) updateContent.get("createdDoctorId"));
+            main.setCreateDoctorName((String) updateContent.get("createdDoctorName"));
             healthRecordMainMapper.updateById(main);
         }
         if(updateContent.containsKey("createTime")) {
-            main.setStatus((String) updateContent.get("createTime"));
+            main.setCreateTime((LocalDateTime) updateContent.get("createTime"));
             healthRecordMainMapper.updateById(main);
         }
         if(updateContent.containsKey("updateTime")) {
-            main.setStatus((String) updateContent.get("updateTime"));
+            main.setUpdateTime((LocalDateTime) updateContent.get("updateTime"));
             healthRecordMainMapper.updateById(main);
         }
         

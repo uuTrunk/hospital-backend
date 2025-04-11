@@ -16,7 +16,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/health-record")
-@Validated
 public class HealthRecordController {
 
     @Autowired
@@ -25,7 +24,7 @@ public class HealthRecordController {
     // 健康档案列表查询接口
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<Page<HealthRecordDTO>>> listHealthRecords(
-        @Valid @ModelAttribute HealthRecordQueryDTO queryDTO) {
+        @RequestBody HealthRecordQueryDTO queryDTO) {
         return ResponseEntity.ok(ApiResponse.success(healthRecordService.listHealthRecords(queryDTO)));
     }
 
@@ -39,7 +38,7 @@ public class HealthRecordController {
     // 创建健康档案接口
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<String>> createHealthRecord(
-        @Valid @RequestBody HealthRecordCreateDTO createDTO) {
+        @RequestBody HealthRecordCreateDTO createDTO) {
         return ResponseEntity.ok(ApiResponse.success(healthRecordService.createHealthRecord(createDTO)));
     }
 
@@ -48,19 +47,20 @@ public class HealthRecordController {
     public ResponseEntity<ApiResponse<Void>> updateHealthRecord(
         @RequestParam String recordId,
         @RequestBody Map<String, Object> updateContent) {
+        healthRecordService.updateHealthRecord(recordId, updateContent);
         return ResponseEntity.ok(ApiResponse.success());
     }
 
     // 病史管理接口
     @PostMapping("/history")
     public ResponseEntity<ApiResponse<Void>> addHistory(
-        @Valid @RequestBody AdmissionHistoryCreateDTO historyDTO) {
+        @RequestBody AdmissionHistoryCreateDTO historyDTO) {
         return ResponseEntity.ok(ApiResponse.success());
     }
 
     @PutMapping("/history")
     public ResponseEntity<ApiResponse<Void>> updateHistory(
-        @Valid @RequestBody AdmissionHistoryUpdateDTO historyDTO) {
+        @RequestBody AdmissionHistoryUpdateDTO historyDTO) {
         return ResponseEntity.ok(ApiResponse.success());
     }
 
