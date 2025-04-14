@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
         user.setName(dto.getName());
         user.setStatus("正常"); // 默认启用状态
         user.setCreateTime(new Date());
+        user.setPhoneNumber(dto.getPhoneNumber());
 
         // 保存用户信息
         userMapper.insert(user);

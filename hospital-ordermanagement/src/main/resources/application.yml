@@ -15,7 +15,10 @@ spring:
     url: jdbc:mysql://localhost:3306/hospital?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     password: lmx175586
-  cloud:
-    ai:
-      tongyi:
-        api-key: sk-e1add1a99a154155b133d250a33f875c
+  ai:
+    openai:
+      api-key: sk-ed781f4e64004724add44fa82490249c
+      baseurl: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat

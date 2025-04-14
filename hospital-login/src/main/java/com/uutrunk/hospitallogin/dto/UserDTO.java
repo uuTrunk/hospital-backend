@@ -11,6 +11,7 @@ public class UserDTO {
     private String password;
     private String role;
     private String name;
+    private String phoneNumber;
     private String adminPassword;
 
     // 从实体类转换的静态方法

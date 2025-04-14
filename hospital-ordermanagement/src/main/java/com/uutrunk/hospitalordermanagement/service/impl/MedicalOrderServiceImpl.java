@@ -13,12 +13,10 @@ import com.uutrunk.hospitalordermanagement.exception.TypeUnknownException;
 import com.uutrunk.hospitalordermanagement.mapper.*;
 import com.uutrunk.hospitalordermanagement.pojo.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
-import jakarta.annotation.Resource;
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,9 +45,6 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     private PatientInfoMapper patientInfoMapper;
     @Autowired
     private DoctorInfoMapper doctorInfoMapper;
-
-    @Resource
-    private ChatClient chatClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -216,11 +211,18 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         return result;
     }
 
-    @Override
-    public String chat(String message) {
-        Prompt prompt = new Prompt(new UserMessage(message));
-        return chatClient.call(prompt).getResult().getOutput().getContent();
-    }
+//    @Override
+//    public List<Generation> chat(String message) {
+//        UserMessage userMessage = new UserMessage(message);
+//        String systemText = "你是一个拥有丰富医学知识与经验的资深医生, 现在请你针对该患者的病情提出医嘱建议";
+//        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemText);
+//        Message systemMessage = systemPromptTemplate.createMessage();
+//        Prompt prompt = new Prompt(List.of(userMessage, systemMessage));
+//        List<Generation> resoponse = chatClient.call(prompt).getResults();
+//
+//        return resoponse;
+//
+//    }
 
     // 辅助方法：获取patient_id列表（可提取为工具方法）
     private List<Integer> getPatientIdsByQuery(MedicalOrderQueryDTO queryDTO) {
