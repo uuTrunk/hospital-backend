@@ -13,7 +13,7 @@ public class AdmissionHistory {
     @TableId(value = "history_id", type = IdType.AUTO)
     private Integer historyId;
     
-    private String recordId;
+    private Integer recordId;
     
     private HistoryType historyType;
     

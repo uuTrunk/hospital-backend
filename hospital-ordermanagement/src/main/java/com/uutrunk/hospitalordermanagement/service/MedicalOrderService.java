@@ -40,5 +40,12 @@ public interface MedicalOrderService {
      */
     PageResult<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO);
 
+    /**
+     * 获取医嘱列表
+     * @param message 用户输入信息
+     * @return AI返回信息
+     */
+    String chat(String message);
+
 
 }

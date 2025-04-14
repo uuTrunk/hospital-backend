@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService {
 
         // 从配置读取Base64密钥并解码
         Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 移除Base64解码
+        System.out.println("==================233===========================");
 
         // 生成JWT Token逻辑
         String token = Jwts.builder()

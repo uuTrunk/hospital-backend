@@ -63,4 +63,10 @@ public class MedicalOrderController {
         // 暂时返回成功响应，实际应调用打印服务
         return ResponseEntity.ok(ApiResponse.success("打印任务已发起"));
     }
+
+    @GetMapping("/chat")
+    public ResponseEntity<ApiResponse<?>> chat(@RequestParam("orderId") String message) {
+        // 暂时返回成功响应，实际应调用聊天服务
+        return ResponseEntity.ok(ApiResponse.success(medicalOrderService.chat(message)));
+    }
 }

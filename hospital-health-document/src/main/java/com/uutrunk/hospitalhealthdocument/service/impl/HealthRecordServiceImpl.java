@@ -43,7 +43,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
     
     @Transactional
     @Override
-    public String createHealthRecord(HealthRecordCreateDTO createDTO) {
+    public HealthRecordResponseDTO createHealthRecord(HealthRecordCreateDTO createDTO) {
         // 参数校验
         if (createDTO.getPatientId() == null) {
             throw new IllegalArgumentException("患者ID不能为空");
@@ -52,12 +52,9 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         // 检查患者是否存在
         PatientInfo patient = patientMapper.selectById(createDTO.getPatientId());
 //        System.out.println("查找患者后");
-        // 生成格式化 ID
-        String recordId = UUID.randomUUID().toString().replace("-", "");
 
         // 创建主表记录
         HealthRecordMain main = new HealthRecordMain();
-        main.setRecordId(recordId);
         main.setPatientId(createDTO.getPatientId());
         main.setCreateDoctorName(createDTO.getCreateDoctorName());
         main.setCreateTime(LocalDateTime.now());
@@ -66,6 +63,9 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         healthRecordMainMapper.insert(main);
 
         HealthRecordContentDTO content = createDTO.getBasicInfo();
+
+        Integer recordId = main.getRecordId();
+        System.out.println(recordId);
 
         //创建入院病史表
         AdmissionHistoryDTO historyDTO = content.getAdmissionHistoryDTO();
@@ -78,12 +78,15 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         DiagnosisPlan plan = DiagnosisPlanConvertor.INSTANCE.toEntity(planDTO);
         plan.setRecordId(recordId);
         diagnosisPlanMapper.insert(plan);
+
+        HealthRecordResponseDTO response = new HealthRecordResponseDTO();
+        response.setRecordId(recordId);
         
-        return recordId;
+        return response;
     }
     
     @Override
-    public HealthRecordDetailDTO getDetail(String recordId) {
+    public HealthRecordDetailDTO getDetail(Integer recordId) {
         // 查询主表信息
         HealthRecordMain main = healthRecordMainMapper.selectById(recordId);
         if (main == null) {
@@ -161,7 +164,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
 
     @Transactional
     @Override
-    public void updateHealthRecord(String recordId, HealthRecordUpdateDTO updateContent) {
+    public void updateHealthRecord(Integer recordId, HealthRecordUpdateDTO updateContent) {
         // 校验档案是否存在
         HealthRecordMain main = healthRecordMainMapper.selectById(recordId);
         if (main == null) {
@@ -200,13 +203,15 @@ public class HealthRecordServiceImpl implements HealthRecordService {
     
     @Transactional
     @Override
-    public void addHistory(AdmissionHistoryCreateDTO historyDTO) {
+    public AdmissionHistoryResponseDTO addHistory(AdmissionHistoryCreateDTO historyDTO) {
         AdmissionHistory history = new AdmissionHistory();
         history.setRecordId(historyDTO.getRecordId());
         history.setHistoryType(historyDTO.getHistoryType());
         history.setContent(historyDTO.getContent());
         admissionHistoryMapper.insert(history);
-        return;
+        AdmissionHistoryResponseDTO response = new AdmissionHistoryResponseDTO();
+        response.setHistoryId(history.getHistoryId());
+        return response;
     }
     
     @Transactional

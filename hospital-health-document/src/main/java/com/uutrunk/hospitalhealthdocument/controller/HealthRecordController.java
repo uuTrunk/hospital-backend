@@ -31,13 +31,13 @@ public class HealthRecordController {
     // 健康档案详情查询接口
     @GetMapping("/detail/{recordId}")
     public ResponseEntity<ApiResponse<HealthRecordDetailDTO>> getDetail(
-        @PathVariable String recordId) {
+        @PathVariable Integer recordId) {
         return ResponseEntity.ok(ApiResponse.success(healthRecordService.getDetail(recordId)));
     }
 
     // 创建健康档案接口
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<String>> createHealthRecord(
+    public ResponseEntity<ApiResponse<HealthRecordResponseDTO>> createHealthRecord(
         @RequestBody HealthRecordCreateDTO createDTO) {
         return ResponseEntity.ok(ApiResponse.success(healthRecordService.createHealthRecord(createDTO)));
     }
@@ -45,7 +45,7 @@ public class HealthRecordController {
     // 更新健康档案接口
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<Void>> updateHealthRecord(
-        @RequestParam String recordId,
+        @RequestParam Integer recordId,
         @RequestBody HealthRecordUpdateDTO updateContent) {
         healthRecordService.updateHealthRecord(recordId, updateContent);
         return ResponseEntity.ok(ApiResponse.success());
@@ -53,9 +53,9 @@ public class HealthRecordController {
 
     // 病史管理接口
     @PostMapping("/history")
-    public ResponseEntity<ApiResponse<Void>> addHistory(
+    public ResponseEntity<ApiResponse<AdmissionHistoryResponseDTO>> addHistory(
         @RequestBody AdmissionHistoryCreateDTO historyDTO) {
-        return ResponseEntity.ok(ApiResponse.success());
+        return ResponseEntity.ok(ApiResponse.success(healthRecordService.addHistory(historyDTO)));
     }
 
     @PutMapping("/history")

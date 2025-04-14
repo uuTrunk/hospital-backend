@@ -12,16 +12,16 @@ public interface HealthRecordService {
     PageResult<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO);
     
     // 健康档案详情查询
-    HealthRecordDetailDTO getDetail(String recordId);
+    HealthRecordDetailDTO getDetail(Integer recordId);
     
     // 创建健康档案
-    String createHealthRecord(HealthRecordCreateDTO createDTO);
+    HealthRecordResponseDTO createHealthRecord(HealthRecordCreateDTO createDTO);
     
     // 更新健康档案
-    void updateHealthRecord(String recordId, HealthRecordUpdateDTO updateContent);
+    void updateHealthRecord(Integer recordId, HealthRecordUpdateDTO updateContent);
     
     // 病史管理接口
-    void addHistory(AdmissionHistoryCreateDTO historyDTO);
+    AdmissionHistoryResponseDTO addHistory(AdmissionHistoryCreateDTO historyDTO);
     void updateHistory(AdmissionHistoryUpdateDTO historyDTO);
     void deleteHistory(@NonNull Integer historyId);
 }

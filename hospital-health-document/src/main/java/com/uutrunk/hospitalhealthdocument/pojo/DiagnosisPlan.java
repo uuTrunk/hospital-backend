@@ -13,7 +13,7 @@ public class DiagnosisPlan {
     @TableId(value = "plan_id", type = IdType.AUTO)
     private Integer planId;
     @TableField("record_id")
-    private String recordId;
+    private Integer recordId;
     @TableField("diagnosis")
     private String diagnosis;
     @TableField("treatment_plan")
