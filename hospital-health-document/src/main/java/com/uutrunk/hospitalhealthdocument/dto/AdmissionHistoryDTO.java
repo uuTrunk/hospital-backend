@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Accessors(chain = true)
 public class AdmissionHistoryDTO {
     private Integer historyId;
-    private Integer typeId; // 需要字典转换
+    private AdmissionHistory.HistoryType historyType; // 需要字典转换
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime recordTime;

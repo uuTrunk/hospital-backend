@@ -18,7 +18,7 @@ public interface HealthRecordService {
     String createHealthRecord(HealthRecordCreateDTO createDTO);
     
     // 更新健康档案
-    void updateHealthRecord(String recordId, Map<String, Object> updateContent);
+    void updateHealthRecord(String recordId, HealthRecordUpdateDTO updateContent);
     
     // 病史管理接口
     void addHistory(AdmissionHistoryCreateDTO historyDTO);

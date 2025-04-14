@@ -46,7 +46,7 @@ public class HealthRecordController {
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<Void>> updateHealthRecord(
         @RequestParam String recordId,
-        @RequestBody Map<String, Object> updateContent) {
+        @RequestBody HealthRecordUpdateDTO updateContent) {
         healthRecordService.updateHealthRecord(recordId, updateContent);
         return ResponseEntity.ok(ApiResponse.success());
     }

@@ -40,5 +40,6 @@
     <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.19" level="project" />
     <orderEntry type="library" name="Maven: org.mapstruct:mapstruct:1.5.5.Final" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.15.2" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.25.4" level="project" />
   </component>
 </module>

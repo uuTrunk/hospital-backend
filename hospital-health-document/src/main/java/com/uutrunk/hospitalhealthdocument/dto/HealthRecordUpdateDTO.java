@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class HealthRecordUpdateDTO {
-    private String recordId;
-    private HealthRecordDetailDTO healthRecordDetailDTO;
+    private Integer recordId;
+    private HealthRecordDTO healthRecordDTO;
+    private HealthRecordContentDTO healthRecordContentDTO;
 }

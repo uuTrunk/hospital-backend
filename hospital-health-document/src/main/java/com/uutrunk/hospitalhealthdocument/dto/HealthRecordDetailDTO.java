@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 public class HealthRecordDetailDTO {
-    private String recordId;
+    private Integer recordId;
     private PatientDTO patientInfo;
     private List<AdmissionHistoryDTO> historyList;
     private List<DiagnosisPlanDTO> diagnosisList;

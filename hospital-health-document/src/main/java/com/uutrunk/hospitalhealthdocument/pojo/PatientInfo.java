@@ -2,6 +2,7 @@ package com.uutrunk.hospitalhealthdocument.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -21,7 +22,7 @@ public class PatientInfo {
     private String idCard;
     
     private String admissionNumber;
-    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime admissionDate;
     
     private String bedNumber;
