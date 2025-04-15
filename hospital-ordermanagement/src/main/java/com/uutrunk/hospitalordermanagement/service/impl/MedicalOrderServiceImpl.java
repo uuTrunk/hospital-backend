@@ -3,8 +3,9 @@ package com.uutrunk.hospitalordermanagement.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.uutrunk.hospitalordermanagement.Enum.OrderType;
-import com.uutrunk.hospitalordermanagement.Enum.Status;
+import com.uutrunk.hospitalestimate.service.HealthAssessmentService;
+import com.uutrunk.hospitalordermanagement.enums.OrderType;
+import com.uutrunk.hospitalordermanagement.enums.Status;
 import com.uutrunk.hospitalordermanagement.dto.*;
 import com.uutrunk.hospitalordermanagement.exception.BeanUtilsException;
 import com.uutrunk.hospitalordermanagement.exception.DatabaseException;
@@ -13,16 +14,15 @@ import com.uutrunk.hospitalordermanagement.exception.TypeUnknownException;
 import com.uutrunk.hospitalordermanagement.mapper.*;
 import com.uutrunk.hospitalordermanagement.pojo.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,6 +45,14 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     private PatientInfoMapper patientInfoMapper;
     @Autowired
     private DoctorInfoMapper doctorInfoMapper;
+
+
+    private final ChatModel chatModel;
+
+    public MedicalOrderServiceImpl(ChatModel chatModel) {
+        this.chatModel = chatModel;
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -211,18 +219,15 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         return result;
     }
 
-//    @Override
-//    public List<Generation> chat(String message) {
-//        UserMessage userMessage = new UserMessage(message);
-//        String systemText = "你是一个拥有丰富医学知识与经验的资深医生, 现在请你针对该患者的病情提出医嘱建议";
-//        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemText);
-//        Message systemMessage = systemPromptTemplate.createMessage();
-//        Prompt prompt = new Prompt(List.of(userMessage, systemMessage));
-//        List<Generation> resoponse = chatClient.call(prompt).getResults();
-//
-//        return resoponse;
-//
-//    }
+    @Override
+    public String chat(String message) {
+        message = """
+                你现在是一位医学知识丰富且临床经验充沛的医学专家
+                请你以专业的医学知识回答下列问题:
+                """
+                + message;
+        return this.chatModel.call(message);
+    }
 
     // 辅助方法：获取patient_id列表（可提取为工具方法）
     private List<Integer> getPatientIdsByQuery(MedicalOrderQueryDTO queryDTO) {

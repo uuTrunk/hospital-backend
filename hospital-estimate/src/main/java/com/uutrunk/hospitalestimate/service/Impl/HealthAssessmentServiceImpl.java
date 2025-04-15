@@ -1,22 +1,27 @@
 package com.uutrunk.hospitalestimate.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.uutrunk.hospitalestimate.mapper.AdmissionAssessmentMapper;
 import com.uutrunk.hospitalestimate.mapper.CurrentIllnessMapper;
 import com.uutrunk.hospitalestimate.mapper.DietRestrictionMapper;
 import com.uutrunk.hospitalestimate.mapper.PatientAssessmentMapper;
 import com.uutrunk.hospitalestimate.Enum.AdmissionAgreement;
+import com.uutrunk.hospitalestimate.pojo.AdmissionAssessment;
 import com.uutrunk.hospitalestimate.pojo.CurrentIllness;
 import com.uutrunk.hospitalestimate.pojo.DietRestriction;
 import com.uutrunk.hospitalestimate.pojo.PatientAssessment;
 import com.uutrunk.hospitalestimate.service.HealthAssessmentService;
 import com.uutrunk.hospitalestimate.vo.HealthAssessmentVO;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+@DubboService
 public class HealthAssessmentServiceImpl implements HealthAssessmentService {
 
+    private AdmissionAssessmentMapper admissionAssessmentMapper;
     private CurrentIllnessMapper currentIllnessMapper;
     private PatientAssessmentMapper patientAssessmentMapper;
     private DietRestrictionMapper dietRestrictionMapper;
@@ -48,6 +53,12 @@ public class HealthAssessmentServiceImpl implements HealthAssessmentService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public HealthAssessmentVO getDetailByPatientId(int patientId) {
+        AdmissionAssessment admissionAssessment = admissionAssessmentMapper.selectOne(new QueryWrapper<AdmissionAssessment>().eq("patient_id", patientId));
+        return getDetail(admissionAssessment.getId());
     }
 
     @Override

@@ -24,4 +24,6 @@ public interface HealthRecordService {
     AdmissionHistoryResponseDTO addHistory(AdmissionHistoryCreateDTO historyDTO);
     void updateHistory(AdmissionHistoryUpdateDTO historyDTO);
     void deleteHistory(@NonNull Integer historyId);
+
+    HealthRecordDetailDTO getDetailByPatientId(Integer patientId);
 }

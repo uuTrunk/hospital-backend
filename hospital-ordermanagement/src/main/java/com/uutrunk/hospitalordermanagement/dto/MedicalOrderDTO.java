@@ -1,7 +1,7 @@
 package com.uutrunk.hospitalordermanagement.dto;
 
-import com.uutrunk.hospitalordermanagement.Enum.OrderType;
-import com.uutrunk.hospitalordermanagement.Enum.Status;
+import com.uutrunk.hospitalordermanagement.enums.OrderType;
+import com.uutrunk.hospitalordermanagement.enums.Status;
 import com.uutrunk.hospitalordermanagement.pojo.MedicalOrderMain;
 import lombok.Data;
 

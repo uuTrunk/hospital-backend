@@ -1,4 +1,4 @@
-package com.uutrunk.hospitalordermanagement.Enum;
+package com.uutrunk.hospitalordermanagement.enums;
 
 public enum OrderType {
     临时("临时"),

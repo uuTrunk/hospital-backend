@@ -7,14 +7,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="medical-prescription-service" />
         <module name="hospital-health-document" />
         <module name="hospital-estimate" />
         <module name="hospital-discharge-service" />
         <module name="hospital-ordermanagement" />
-        <module name="medical-prescription-service" />
         <module name="hospital-login" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hospital-common" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

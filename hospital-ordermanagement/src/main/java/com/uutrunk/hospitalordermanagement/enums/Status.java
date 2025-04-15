@@ -1,4 +1,4 @@
-package com.uutrunk.hospitalordermanagement.Enum;
+package com.uutrunk.hospitalordermanagement.enums;
 
 public enum Status {
     待校对,

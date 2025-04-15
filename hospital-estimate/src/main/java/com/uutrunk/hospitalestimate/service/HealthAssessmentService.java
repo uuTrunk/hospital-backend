@@ -8,4 +8,5 @@ import com.uutrunk.hospitalestimate.vo.HealthAssessmentVO;
 public interface HealthAssessmentService {
     HealthAssessmentVO getDetail(int assessmentId);
     void submit(HealthAssessmentVO healthAssessmentVO);
+    HealthAssessmentVO getDetailByPatientId(int patientId);
 }

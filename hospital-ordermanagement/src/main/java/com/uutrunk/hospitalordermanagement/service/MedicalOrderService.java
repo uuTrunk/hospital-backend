@@ -1,6 +1,7 @@
 package com.uutrunk.hospitalordermanagement.service;
 
 import com.uutrunk.hospitalordermanagement.dto.*;
+import org.springframework.ai.chat.model.Generation;
 
 import java.util.List;
 
@@ -42,12 +43,12 @@ public interface MedicalOrderService {
      */
     PageResult<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO);
 
-//    /**
-//     * 获取医嘱列表
-//     * @param message 用户输入信息
-//     * @return AI返回信息
-//     */
-//    List<Generation> chat(String message);
+    /**
+     * 获取医嘱列表
+     * @param message 用户输入信息
+     * @return AI返回信息
+     */
+    String chat(String message);
 
 
 }

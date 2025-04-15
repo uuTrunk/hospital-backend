@@ -3,8 +3,8 @@ package com.uutrunk.hospitalordermanagement.pojo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.uutrunk.hospitalordermanagement.Enum.OrderType;
-import com.uutrunk.hospitalordermanagement.Enum.Status;
+import com.uutrunk.hospitalordermanagement.enums.OrderType;
+import com.uutrunk.hospitalordermanagement.enums.Status;
 import lombok.Data;
 
 import java.time.LocalDateTime;

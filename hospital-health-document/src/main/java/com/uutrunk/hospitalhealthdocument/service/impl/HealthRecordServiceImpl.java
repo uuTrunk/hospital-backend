@@ -17,6 +17,7 @@ import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
 import jakarta.persistence.EntityNotFoundException;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
+@DubboService
 public class HealthRecordServiceImpl implements HealthRecordService {
     @Autowired
     private HealthRecordMainMapper healthRecordMainMapper;
@@ -235,5 +236,15 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         }
         admissionHistoryMapper.deleteById(historyId);
         return;
+    }
+
+    /**
+     * @param patientId
+     * @return
+     */
+    @Override
+    public HealthRecordDetailDTO getDetailByPatientId(Integer patientId) {
+        HealthRecordMain record = healthRecordMainMapper.selectOne(new QueryWrapper<HealthRecordMain>().eq("patient_id", patientId));
+        return getDetail(record.getRecordId());
     }
 }

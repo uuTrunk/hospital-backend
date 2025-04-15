@@ -3,8 +3,10 @@ package com.uutrunk.hospitalordermanagement.controller;
 import com.uutrunk.hospitalordermanagement.common.ApiResponse;
 import com.uutrunk.hospitalordermanagement.dto.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
-import jakarta.validation.Valid;
 //import org.springframework.ai.openai.OpenAiChatModel;
+import jakarta.validation.Valid;
+import org.springframework.ai.chat.model.Generation;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +21,12 @@ public class MedicalOrderController {
     @Autowired
     private MedicalOrderService medicalOrderService;
 
-////    private final OpenAiChatModel chatModel;
-//
-//    public MedicalOrderController(OpenAiChatModel chatModel) {
-//        this.chatModel = chatModel;
-//    }
+    private final OpenAiChatModel chatModel;
+
+    public MedicalOrderController(OpenAiChatModel chatModel) {
+        this.chatModel = chatModel;
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<String>> create(@RequestBody MedicalOrderCreateDTO dto) {
@@ -74,9 +77,9 @@ public class MedicalOrderController {
         return ResponseEntity.ok(ApiResponse.success("打印任务已发起"));
     }
 
-//    @GetMapping("/chat")
-//    public ResponseEntity<ApiResponse<Map<String, String>>> chat(@RequestParam("message") String message) {
-//        // 暂时返回成功响应，实际应调用聊天服务
-//        return ResponseEntity.ok(ApiResponse.success(Map.of("generation", this.chatModel.call(message))));
-//    }
+    @GetMapping("/chat")
+    public ResponseEntity<ApiResponse<String>> chat(@RequestParam("message") String message) {
+        System.out.println("success");
+        return ResponseEntity.ok(ApiResponse.success(medicalOrderService.chat(message)));
+    }
 }
