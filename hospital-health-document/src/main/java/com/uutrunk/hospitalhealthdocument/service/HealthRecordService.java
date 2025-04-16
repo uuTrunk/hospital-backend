@@ -4,12 +4,15 @@ import com.alibaba.nacos.shaded.org.checkerframework.checker.nullness.qual.NonNu
 import com.uutrunk.hospitalhealthdocument.dto.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.List;
 import java.util.Map;
 
 // 新增文件：健康档案业务接口
 public interface HealthRecordService {
     // 健康档案列表查询
     PageResult<HealthRecordDTO> listHealthRecords(HealthRecordQueryDTO queryDTO);
+
+    List<HealthRecordDTO> listAllHealthRecords();
     
     // 健康档案详情查询
     HealthRecordDetailDTO getDetail(Integer recordId);

@@ -12,6 +12,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,6 +27,11 @@ public class HealthRecordController {
     public ResponseEntity<ApiResponse<PageResult<HealthRecordDTO>>> listHealthRecords(
         @RequestBody HealthRecordQueryDTO queryDTO) {
         return ResponseEntity.ok(ApiResponse.success(healthRecordService.listHealthRecords(queryDTO)));
+    }
+
+    @GetMapping("/list/all")
+    public ResponseEntity<ApiResponse<List<HealthRecordDTO>>> listAllHealthRecords() {
+        return ResponseEntity.ok(ApiResponse.success(healthRecordService.listAllHealthRecords()));
     }
 
     // 健康档案详情查询接口

@@ -48,7 +48,7 @@ public interface MedicalOrderService {
      * @param message 用户输入信息
      * @return AI返回信息
      */
-    String chat(String message, Integer patientId);
+    String chat(String message);
 
 
 }

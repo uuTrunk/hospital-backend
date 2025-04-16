@@ -80,8 +80,8 @@ public class MedicalOrderController {
     }
 
     @GetMapping("/chat")
-    public ResponseEntity<ApiResponse<String>> chat(@RequestParam("message") String message, @RequestParam("patientId") Integer patientId) {
+    public ResponseEntity<ApiResponse<String>> chat(@RequestParam("message") String message) {
         System.out.println("success");
-        return ResponseEntity.ok(ApiResponse.success(medicalOrderService.chat(message, patientId)));
+        return ResponseEntity.ok(ApiResponse.success(medicalOrderService.chat(message)));
     }
 }

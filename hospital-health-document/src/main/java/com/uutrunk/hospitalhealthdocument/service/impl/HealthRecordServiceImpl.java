@@ -27,10 +27,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.alibaba.nacos.client.naming.core.Balancer.RandomByWeight.selectAll;
 
 @DubboService
 public class HealthRecordServiceImpl implements HealthRecordService {
@@ -163,6 +166,17 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         result.setTotal(recordPage.getTotal());
         result.setList(dtoList);
         return result;
+    }
+
+    @Override
+    public List<HealthRecordDTO> listAllHealthRecords() {
+        List<HealthRecordMain> records = healthRecordMainMapper.selectAll();
+        List<HealthRecordDTO> list = new ArrayList<>();
+        for(HealthRecordMain record : records) {
+            HealthRecordDTO dto = HealthRecordConvertor.INSTANCE.toDTO(record);
+            list.add(dto);
+        }
+        return list;
     }
 
 

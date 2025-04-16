@@ -48,10 +48,6 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     @Autowired
     private DoctorInfoMapper doctorInfoMapper;
 
-    @DubboReference
-    private HealthRecordService healthRecordService;
-
-
     private final ChatModel chatModel;
 
     public MedicalOrderServiceImpl(ChatModel chatModel) {
@@ -225,19 +221,14 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     }
 
     @Override
-    public String chat(String message, Integer patientId) {
+    public String chat(String message) {
 
         message = """
                 你现在是一位医学知识丰富且临床经验充沛的医学专家.
-                """
-                + """
-                该患者的现病史和既往史如下
-                """
-
-                + """
                 请你以专业的医学知识回答下列问题:
                 """
                 + message;
+        System.out.println(message);
         return this.chatModel.call(message);
     }
 
