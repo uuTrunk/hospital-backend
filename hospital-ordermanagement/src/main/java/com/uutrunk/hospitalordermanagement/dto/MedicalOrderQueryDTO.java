@@ -11,10 +11,8 @@ public class MedicalOrderQueryDTO {
     private String orderType;
     private String status;
     private String patientName;
-    
-    @Min(1)
+
     private Integer page = 1;
-    
-    @Min(1)
+
     private Integer pageSize = 10;
 }

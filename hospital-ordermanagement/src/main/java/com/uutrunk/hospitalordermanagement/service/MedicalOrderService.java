@@ -24,10 +24,10 @@ public interface MedicalOrderService {
     /**
      * 作废医嘱
      * @param orderId 医嘱ID
-     * @param operatorId 操作人ID
+     * @param doctorName  医生ID
      * @return 作废结果
      */
-    void deleteOrder(String orderId, Integer operatorId);
+    void deleteOrder(String orderId, String doctorName);
 
     /**
      * 获取医嘱详情
@@ -48,7 +48,7 @@ public interface MedicalOrderService {
      * @param message 用户输入信息
      * @return AI返回信息
      */
-    String chat(String message);
+    String chat(String message, Integer patientId);
 
 
 }

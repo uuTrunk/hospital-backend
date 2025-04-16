@@ -13,6 +13,7 @@ public class HealthRecordDTO {
     private Integer recordId;
     private String patientName;
     private String createDoctorName;
+    private PatientDetailDTO patientDetailDTO;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     private HealthRecordMain.Status status;

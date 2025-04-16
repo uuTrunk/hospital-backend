@@ -9,6 +9,7 @@ import com.uutrunk.hospitalhealthdocument.common.ApiResponse;
 import com.uutrunk.hospitalhealthdocument.convertor.AdmissionHistoryConvertor;
 import com.uutrunk.hospitalhealthdocument.convertor.DiagnosisPlanConvertor;
 import com.uutrunk.hospitalhealthdocument.convertor.HealthRecordConvertor;
+import com.uutrunk.hospitalhealthdocument.convertor.PatientConvertor;
 import com.uutrunk.hospitalhealthdocument.dto.*;
 import com.uutrunk.hospitalhealthdocument.exception.DatabaseException;
 import com.uutrunk.hospitalhealthdocument.mapper.*;
@@ -110,7 +111,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         // 组装DTO
         HealthRecordDetailDTO detail = new HealthRecordDetailDTO();
         detail.setRecordId(recordId);
-        detail.setPatientInfo(PatientDTO.fromEntity(patient));
+        detail.setPatientInfo(PatientConvertor.INSTANCE.toDTO(patient));
         detail.setHistoryList(histories.stream()
             .map(AdmissionHistoryDTO::fromEntity)
             .collect(Collectors.toList()));
@@ -141,6 +142,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
 
         // 执行联表分页查询
         IPage<HealthRecordMain> recordPage = healthRecordMainMapper.selectPage(page, wrapper);
+        PatientDetailDTO patientDetailDTO = PatientConvertor.INSTANCE.toDetailDTO(patientMapper.selectOne(patientWrapper));
 
         // 转换DTO（确保selectWithPatient已包含patient_info关联数据）
         List<HealthRecordDTO> dtoList = recordPage.getRecords().stream()
@@ -151,6 +153,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
                     if (patient != null) {
                         dto.setPatientName(patient.getName());
                     }
+                    dto.setPatientDetailDTO(patientDetailDTO);
                     return dto;
                 })
                 .collect(Collectors.toList());

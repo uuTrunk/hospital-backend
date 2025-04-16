@@ -18,5 +18,5 @@ public class MedicalOrderUpdateDTO {
     private String dosage;
     private String usage;
     private String frequency;
-    private Integer doctorId;
+    private String doctorName;
 }

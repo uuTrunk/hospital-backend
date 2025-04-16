@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.uutrunk.hospitalestimate.service.HealthAssessmentService;
+import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
 import com.uutrunk.hospitalordermanagement.enums.OrderType;
 import com.uutrunk.hospitalordermanagement.enums.Status;
 import com.uutrunk.hospitalordermanagement.dto.*;
@@ -14,6 +15,7 @@ import com.uutrunk.hospitalordermanagement.exception.TypeUnknownException;
 import com.uutrunk.hospitalordermanagement.mapper.*;
 import com.uutrunk.hospitalordermanagement.pojo.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,9 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     private PatientInfoMapper patientInfoMapper;
     @Autowired
     private DoctorInfoMapper doctorInfoMapper;
+
+    @DubboReference
+    private HealthRecordService healthRecordService;
 
 
     private final ChatModel chatModel;
@@ -84,15 +89,15 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
             throw new DatabaseException("创建医嘱主表失败");
         }
         String orderId = main.getOrderId();
-
+        OrderType orderType = dto.getOrderType();
         // 保存子表信息
-        if ("临时".equals(dto.getOrderType())) {
+        if (orderType==OrderType.临时) {
             TemporaryOrder temp = new TemporaryOrder();
             temp.setOrderId(orderId);
             temp.setValidityPeriod(dto.getValidityPeriod());
             temporaryMapper.insert(temp);
         }
-        else if("长期".equals(dto.getOrderType())){
+        else if(orderType==OrderType.长期){
             LongTermOrder longTerm = new LongTermOrder();
             longTerm.setOrderId(orderId);
             longTerm.setStopTime(dto.getStopTime());
@@ -122,14 +127,14 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         mainMapper.updateById(updateMain);
 
         // 记录操作日志
-        logOperation(dto.getOrderId(), "修改", dto.getDoctorId());
+        logOperation(dto.getOrderId(), "修改", dto.getDoctorName());
 
         return;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteOrder(String orderId, Integer doctorId) {
+    public void deleteOrder(String orderId, String doctorName) {
         // 状态校验
         MedicalOrderMain existing = mainMapper.selectById(orderId);
         if (existing == null) {
@@ -143,7 +148,7 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         mainMapper.updateById(main);
 
         // 记录操作日志
-        logOperation(orderId, "作废", doctorId);
+        logOperation(orderId, "作废", doctorName);
 
         return;
     }
@@ -220,9 +225,16 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     }
 
     @Override
-    public String chat(String message) {
+    public String chat(String message, Integer patientId) {
+
         message = """
-                你现在是一位医学知识丰富且临床经验充沛的医学专家
+                你现在是一位医学知识丰富且临床经验充沛的医学专家.
+                """
+                + """
+                该患者的现病史和既往史如下
+                """
+
+                + """
                 请你以专业的医学知识回答下列问题:
                 """
                 + message;
@@ -241,6 +253,15 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
                 .collect(Collectors.toList());
     }
 
+
+    private void logOperation(String orderId, String type, String doctorName) {
+        OrderOperationLog log = new OrderOperationLog();
+        log.setOrderId(orderId);
+        log.setOperationType(type);
+        log.setOperationTime(LocalDateTime.now());
+        log.setDoctorId(doctorInfoMapper.selectOne(new QueryWrapper<DoctorInfo>().eq("name", doctorName)).getDoctorId());
+        logMapper.insert(log);
+    }
 
     private void logOperation(String orderId, String type, Integer doctorId) {
         OrderOperationLog log = new OrderOperationLog();

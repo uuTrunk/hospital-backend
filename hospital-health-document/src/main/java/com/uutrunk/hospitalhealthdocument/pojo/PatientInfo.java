@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class PatientInfo {
@@ -20,6 +22,14 @@ public class PatientInfo {
     private Integer age;
     
     private String idCard;
+
+    private Date birthDate;
+
+    private LocalDateTime registrationDate;
+
+    private String insuranceType;
+
+    private String insuranceId;
     
     private String admissionNumber;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
