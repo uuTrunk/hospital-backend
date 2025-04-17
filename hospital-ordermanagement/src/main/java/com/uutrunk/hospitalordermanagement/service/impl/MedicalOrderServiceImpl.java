@@ -3,8 +3,7 @@ package com.uutrunk.hospitalordermanagement.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.uutrunk.hospitalestimate.service.HealthAssessmentService;
-import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
+
 import com.uutrunk.hospitalordermanagement.enums.OrderType;
 import com.uutrunk.hospitalordermanagement.enums.Status;
 import com.uutrunk.hospitalordermanagement.dto.*;
@@ -15,10 +14,19 @@ import com.uutrunk.hospitalordermanagement.exception.TypeUnknownException;
 import com.uutrunk.hospitalordermanagement.mapper.*;
 import com.uutrunk.hospitalordermanagement.pojo.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
+import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.moonshot.MoonshotChatModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,12 +56,11 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
     @Autowired
     private DoctorInfoMapper doctorInfoMapper;
 
-    private final ChatModel chatModel;
+    private final MoonshotChatModel chatModel;
 
-    public MedicalOrderServiceImpl(ChatModel chatModel) {
+    public MedicalOrderServiceImpl(MoonshotChatModel chatModel) {
         this.chatModel = chatModel;
     }
-
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -64,17 +71,16 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
             main.setOrderId(UUID.randomUUID().toString().replace("-", ""));
             main.setPatientId(dto.getPatientId());
             main.setDoctorId(dto.getDoctorId());
-            main.setOrderType(dto.getOrderType());
+            main.setOrderType(OrderType.valueOf(dto.getOrderType()));
             main.setContent(dto.getContent());
             main.setDosage(dto.getDosage());
-            main.setMedicalUsage(dto.getUsage());
+            main.setMedicalUsage(dto.getMedicalUsage());
             main.setFrequency(dto.getFrequency());
-            main.setSendingTime(LocalDateTime.now());
             main.setOrderStatus(Status.valueOf("待校对"));
-            main.setStartingTime(dto.getStartTime());
+            main.setStartingTime(dto.getStartingTime());
         }
         catch (RuntimeException e) {
-            throw new BeanUtilsException("Bean拷贝失败");
+            throw new BeanUtilsException(e.toString());
         }
 
         try {
@@ -82,10 +88,10 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
             mainMapper.insert(main);
         }
         catch (RuntimeException e) {
-            throw new DatabaseException("创建医嘱主表失败");
+            throw new DatabaseException(e.toString());
         }
         String orderId = main.getOrderId();
-        OrderType orderType = dto.getOrderType();
+        OrderType orderType = OrderType.valueOf(dto.getOrderType());
         // 保存子表信息
         if (orderType==OrderType.临时) {
             TemporaryOrder temp = new TemporaryOrder();
@@ -96,7 +102,7 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         else if(orderType==OrderType.长期){
             LongTermOrder longTerm = new LongTermOrder();
             longTerm.setOrderId(orderId);
-            longTerm.setStopTime(dto.getStopTime());
+            longTerm.setStopTime(dto.getStoppingTime());
             longMapper.insert(longTerm);
         }
         else {
@@ -220,18 +226,6 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         return result;
     }
 
-    @Override
-    public String chat(String message) {
-
-        message = """
-                你现在是一位医学知识丰富且临床经验充沛的医学专家.
-                请你以专业的医学知识回答下列问题:
-                """
-                + message;
-        System.out.println(message);
-        return this.chatModel.call(message);
-    }
-
     // 辅助方法：获取patient_id列表（可提取为工具方法）
     private List<Integer> getPatientIdsByQuery(MedicalOrderQueryDTO queryDTO) {
         if (queryDTO.getPatientName() == null || queryDTO.getPatientName().trim().isEmpty()) {
@@ -261,6 +255,14 @@ public class MedicalOrderServiceImpl implements MedicalOrderService {
         log.setOperationTime(LocalDateTime.now());
         log.setDoctorId(doctorId);
         logMapper.insert(log);
+    }
+
+    public String chat(String message) {
+        message = """
+                你现在是一名经验丰富的医学专家.
+                """ + message;
+        System.out.println(message);
+        return this.chatModel.call(message);
     }
 
 }

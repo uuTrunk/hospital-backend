@@ -11,7 +11,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dubbo.version>3.3.0</dubbo.version>
+        <dubbo.version>3.3.2</dubbo.version>
         <spring-boot.version>3.1.2</spring-boot.version>
     </properties>
     <dependencies>
@@ -98,6 +98,18 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.uutrunk</groupId>
+            <artifactId>hospital-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-core</artifactId>
+            <version>1.0.0-M6</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

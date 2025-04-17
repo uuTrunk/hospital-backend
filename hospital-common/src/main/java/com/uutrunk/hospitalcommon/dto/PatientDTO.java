@@ -1,17 +1,16 @@
-package com.uutrunk.hospitalhealthdocument.dto;
+package com.uutrunk.hospitalcommon.dto;
 
-import com.uutrunk.hospitalhealthdocument.enums.CareGrade;
-import com.uutrunk.hospitalhealthdocument.pojo.PatientInfo;
+import com.uutrunk.hospitalcommon.enums.CareGrade;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@Component
 @Accessors(chain = true)
-public class PatientDTO implements Serializable {
-    private static final long serialVersionUID = 2L;
+public class PatientDTO {
     private String name;
     private String bedNumber;
     private CareGrade careGrade;

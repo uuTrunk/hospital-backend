@@ -20,7 +20,7 @@ public class MedicalOrderDTO {
     private String validityPeriod;
     private LocalDateTime stopTime;
     private Status orderStatus;
-    private LocalDateTime sendingTime;
+    private LocalDateTime stoppingTime;
     private LocalDateTime startingTime;
 
     public MedicalOrderDTO fromMainEntity(MedicalOrderMain entity) {
@@ -31,7 +31,6 @@ public class MedicalOrderDTO {
         this.medicalUsage = entity.getMedicalUsage();
         this.frequency = entity.getFrequency();
         this.orderStatus = entity.getOrderStatus();
-        this.sendingTime = entity.getSendingTime();
         this.startingTime = entity.getStartingTime();
         return this;
 

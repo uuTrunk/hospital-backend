@@ -3,6 +3,7 @@ package com.uutrunk.hospitalhealthdocument.pojo;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.uutrunk.hospitalhealthdocument.enums.CareGrade;
 import lombok.Data;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.Id;
@@ -43,9 +44,4 @@ public class PatientInfo {
 
     private CareGrade careGrade;
 
-    public enum CareGrade {
-        一级护理,
-        二级护理,
-        三级护理
-    }
 }

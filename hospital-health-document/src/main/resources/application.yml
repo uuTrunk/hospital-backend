@@ -6,6 +6,7 @@ dubbo:
     name: HospitalHealthDocumentApplication
   registry:
     address: nacos://${nacos.address:127.0.0.1}:8848
+    protocol: nacos
   protocol:
     name: tri
     port: 50052

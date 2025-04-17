@@ -1,20 +1,19 @@
-package com.uutrunk.hospitalhealthdocument.dto;
+package com.uutrunk.hospitalcommon.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.uutrunk.hospitalhealthdocument.enums.HistoryType;
-import com.uutrunk.hospitalhealthdocument.pojo.AdmissionHistory;
+import com.uutrunk.hospitalcommon.enums.HistoryType;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Component
 @Accessors(chain = true)
-public class AdmissionHistoryDTO implements Serializable {
-    private static final long serialVersionUID = 3L;
+public class AdmissionHistoryDTO {
     private Integer historyId;
     private HistoryType historyType; // 需要字典转换
     private String content;

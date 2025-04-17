@@ -3,6 +3,7 @@ package com.uutrunk.hospitalhealthdocument.pojo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.uutrunk.hospitalhealthdocument.enums.HistoryType;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -20,9 +21,4 @@ public class AdmissionHistory {
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime recordTime;
-
-    public enum HistoryType {
-        现病史,
-        既往史
-    }
 }

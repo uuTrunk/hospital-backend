@@ -24,8 +24,10 @@ public class MedicalOrderMain {
     @TableField(value = "medical_usage")
     private String medicalUsage;
     private String frequency;
-    @TableField(value = "sending_time")
-    private LocalDateTime sendingTime;
+    @TableField(value = "validity_period")
+    private String validityPeriod; // 临时医嘱必填
+    @TableField(value = "stopping_time")
+    private LocalDateTime stoppingTime;
     @TableField(value = "order_status")
     private Status orderStatus; // "待校对"/"已校对"/"已执行"/"已作废"
     @TableField(value = "starting_time")

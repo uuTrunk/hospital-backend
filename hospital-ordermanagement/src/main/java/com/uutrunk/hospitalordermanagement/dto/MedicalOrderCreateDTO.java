@@ -18,23 +18,23 @@ public class MedicalOrderCreateDTO {
     private Integer doctorId;
     
     @NotBlank(message = "医嘱类型不能为空")
-    private OrderType orderType;
+    private String orderType;
     
     @NotBlank(message = "医嘱内容不能为空")
     private String content;
     
     private String dosage;
-    private String usage;
+    private String medicalUsage;
     private String frequency;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startTime;
+    private LocalDateTime startingTime;
 
     @NotBlank(message = "临时医嘱必须填写有效期")
     @Pattern(regexp = ".*\\d+.*", message = "有效期需包含数字")
     private String validityPeriod; // 临时医嘱必填
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime stopTime; // 长期医嘱必填
+    private LocalDateTime stoppingTime; // 长期医嘱必填
 
 
 }

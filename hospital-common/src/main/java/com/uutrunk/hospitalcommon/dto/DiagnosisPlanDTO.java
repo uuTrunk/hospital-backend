@@ -1,19 +1,18 @@
-package com.uutrunk.hospitalhealthdocument.dto;
+package com.uutrunk.hospitalcommon.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.uutrunk.hospitalhealthdocument.pojo.DiagnosisPlan;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Component
 @Accessors(chain = true)
-public class DiagnosisPlanDTO implements Serializable {
-    private static final long serialVersionUID = 4L;
+public class DiagnosisPlanDTO {
     private Integer planId;
     private String diagnosis;
     private String treatmentPlan;

@@ -4,15 +4,23 @@ import com.uutrunk.hospitalordermanagement.common.ApiResponse;
 import com.uutrunk.hospitalordermanagement.dto.*;
 import com.uutrunk.hospitalordermanagement.service.MedicalOrderService;
 //import org.springframework.ai.openai.OpenAiChatModel;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
-import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/medical-order")
@@ -22,15 +30,9 @@ public class MedicalOrderController {
     @Autowired
     private MedicalOrderService medicalOrderService;
 
-    private final OpenAiChatModel chatModel;
-
-    public MedicalOrderController(OpenAiChatModel chatModel) {
-        this.chatModel = chatModel;
-    }
-
-
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<String>> create(@RequestBody MedicalOrderCreateDTO dto) {
+        System.out.println("success");
         ApiResponse<String> response = ApiResponse.success(medicalOrderService.create(dto));
         return ResponseEntity.ok(response);
     }
@@ -79,9 +81,13 @@ public class MedicalOrderController {
         return ResponseEntity.ok(ApiResponse.success("打印任务已发起"));
     }
 
+    /**
+     *
+     * @param message 问题
+     * @return 回答结果
+     */
     @GetMapping("/chat")
     public ResponseEntity<ApiResponse<String>> chat(@RequestParam("message") String message) {
-        System.out.println("success");
         return ResponseEntity.ok(ApiResponse.success(medicalOrderService.chat(message)));
     }
 }

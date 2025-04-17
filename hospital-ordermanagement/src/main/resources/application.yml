@@ -16,12 +16,9 @@ spring:
     username: root
     password: lmx175586
   ai:
-    openai:
-      api-key: sk-ed781f4e64004724add44fa82490249c
-      baseurl: https://api.deepseek.com
+    moonshot:
+      api-key: sk-87ZQMtul5bC5GIl9vVOgJyOZVwmS6VbgiJO02xxCdXi7e5Ro
       chat:
         options:
-          model: 'deepseek-chat'
+          model: moonshot-v1-8k
           temperature: 0.7
-      embedding:
-        enabled: false

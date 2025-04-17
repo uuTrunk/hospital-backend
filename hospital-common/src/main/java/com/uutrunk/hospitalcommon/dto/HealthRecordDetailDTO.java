@@ -1,4 +1,4 @@
-package com.uutrunk.hospitalhealthdocument.dto;
+package com.uutrunk.hospitalcommon.dto;
 
 import lombok.Data;
 import java.io.Serializable;

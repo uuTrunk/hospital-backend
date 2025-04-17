@@ -20,6 +20,7 @@ import jakarta.persistence.EntityNotFoundException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 // 新增文件：健康档案业务实现
@@ -35,7 +36,8 @@ import java.util.stream.Collectors;
 
 import static com.alibaba.nacos.client.naming.core.Balancer.RandomByWeight.selectAll;
 
-@DubboService
+@DubboService(timeout = 50000)
+@Component
 public class HealthRecordServiceImpl implements HealthRecordService {
     @Autowired
     private HealthRecordMainMapper healthRecordMainMapper;
@@ -115,12 +117,18 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         HealthRecordDetailDTO detail = new HealthRecordDetailDTO();
         detail.setRecordId(recordId);
         detail.setPatientInfo(PatientConvertor.INSTANCE.toDTO(patient));
-        detail.setHistoryList(histories.stream()
-            .map(AdmissionHistoryDTO::fromEntity)
-            .collect(Collectors.toList()));
-        detail.setDiagnosisList(plans.stream()
-            .map(DiagnosisPlanDTO::fromEntity)
-            .collect(Collectors.toList()));
+        List<AdmissionHistoryDTO> historyDTOS = new ArrayList<>();
+        for (AdmissionHistory history : histories) {
+            AdmissionHistoryDTO historyDTO = AdmissionHistoryConvertor.INSTANCE.toDTO(history);
+            historyDTOS.add(historyDTO);
+        }
+        List<DiagnosisPlanDTO> planDTOS = new ArrayList<>();
+        for (DiagnosisPlan plan : plans) {
+            DiagnosisPlanDTO planDTO = DiagnosisPlanConvertor.INSTANCE.toDTO(plan);
+            planDTOS.add(planDTO);
+        }
+        detail.setHistoryList(historyDTOS);
+        detail.setDiagnosisList(planDTOS);
         
         return detail;
     }
