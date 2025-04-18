@@ -1,48 +1,35 @@
 package com.julien.hospitaldischargeservice.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.julien.hospitaldischargeservice.entity.enums.Gender;
+import com.julien.hospitaldischargeservice.entity.enums.CareGrade;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "patient_info")
-@Data
+@TableName("patient_info")
 public class PatientInfo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "patient_id")
+    @TableId(type = IdType.AUTO)
     private Integer patientId;
 
-    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "id_number", unique = true, length = 18)
     private String idNumber;
 
-    @Column(name = "age")
-    private Integer age;
-
-    @Column(name = "registration_date", nullable = false)
     private LocalDateTime registrationDate;
 
-    @Column(name = "bed", nullable = false)
-    private Integer bed;
+    private String bedNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "care_grade", nullable = false)
     private CareGrade careGrade;
-
-    // 枚举类
-    public enum Gender {
-        男, 女
-    }
-
-    public enum CareGrade {
-        一级护理, 二级护理, 三级护理
-    }
 }

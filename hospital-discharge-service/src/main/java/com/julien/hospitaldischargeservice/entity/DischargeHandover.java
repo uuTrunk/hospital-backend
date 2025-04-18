@@ -13,7 +13,7 @@ public class DischargeHandover {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "handover_id")
+    @Column(name = "id")
     private Integer handoverId; // 交接ID，自增
 
     /**
@@ -24,7 +24,7 @@ public class DischargeHandover {
     @JoinColumn(name = "discharge_id", nullable = false)
     private DischargeMain dischargeMain;
 
-    @Column(name = "handover_item", length = 50, nullable = false)
+    @Column(name = "handover_item", nullable = false, length = 50)
     private String handoverItem; // 交接项目
 
     @Enumerated(EnumType.STRING)
