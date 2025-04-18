@@ -1,17 +1,24 @@
 server:
-  port: 8080
+  port: 8083
 dubbo:
   application:
     logger: slf4j
     name: HospitalOrdermanagementApplication
   registry:
-    address: zookeeper://${zookeeper.address:127.0.0.1}:2181
+    address: nacos://${nacos.address:127.0.0.1}:8848
   protocol:
     name: tri
-    port: 50051
+    port: 50053
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/hospital?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     password: lmx175586
+  ai:
+    moonshot:
+      api-key: sk-87ZQMtul5bC5GIl9vVOgJyOZVwmS6VbgiJO02xxCdXi7e5Ro
+      chat:
+        options:
+          model: moonshot-v1-8k
+          temperature: 0.7

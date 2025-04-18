@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uutrunk.hospitalordermanagement.mapper.DoctorInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.DoctorInfo">
+            <id property="doctorId" column="doctor_id" />
+            <result property="name" column="name" />
+            <result property="department" column="department" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        doctor_id,name,department
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from doctor_info
+        where  doctor_id = #{doctor_id} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from doctor_info
+        where  doctor_id = #{doctor_id} 
+    </delete>
+    <insert id="insert" keyColumn="doctor_id" keyProperty="doctor_id" parameterType="com.uutrunk.hospitalordermanagement.pojo.DoctorInfo" useGeneratedKeys="true">
+        insert into doctor_info
+        ( doctor_id,name,department)
+        values (#{doctor_id},#{name},#{department})
+    </insert>
+    <insert id="insertSelective" keyColumn="doctor_id" keyProperty="doctor_id" parameterType="com.uutrunk.hospitalordermanagement.pojo.DoctorInfo" useGeneratedKeys="true">
+        insert into doctor_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="doctor_id != null">doctor_id,</if>
+                <if test="name != null">name,</if>
+                <if test="department != null">department,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="doctor_id != null">#{doctor_id},</if>
+                <if test="name != null">#{name},</if>
+                <if test="department != null">#{department},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.uutrunk.hospitalordermanagement.pojo.DoctorInfo">
+        update doctor_info
+        <set>
+                <if test="name != null">
+                    name = #{name},
+                </if>
+                <if test="department != null">
+                    department = #{department},
+                </if>
+        </set>
+        where   doctor_id = #{doctor_id} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.uutrunk.hospitalordermanagement.pojo.DoctorInfo">
+        update doctor_info
+        set 
+            name =  #{name},
+            department =  #{department}
+        where   doctor_id = #{doctor_id} 
+    </update>
+</mapper>

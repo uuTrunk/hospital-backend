@@ -4,10 +4,10 @@ import com.uutrunk.hospitallogin.common.ApiResponse;
 import com.uutrunk.hospitallogin.dto.*;
 
 public interface UserService {
-    public ApiResponse<UserDTO> createUser(UserDTO dto);
-    public ApiResponse<LoginResponseDTO> login(LoginRequestDTO loginRequestDTO);
-    public ApiResponse<?> resetPassword(ResetPasswordDTO dto);
-    public ApiResponse<RolePermissionDTO> getPermissions(String role);
-    public ApiResponse<?> updateUserStatus(UpdateUserStatusDTO dto);
-    public ApiResponse<?> sendVerificationCode(VerificationCodeRequestDTO dto);
+    public UserDTO createUser(UserDTO dto);
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
+    public void resetPassword(ResetPasswordDTO dto);
+    public RolePermissionDTO getPermissions(String token);
+    public void updateUserStatus(UpdateUserStatusDTO dto);
+    public void sendVerificationCode(VerificationCodeRequestDTO dto);
 }

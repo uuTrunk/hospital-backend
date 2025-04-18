@@ -1,5 +1,6 @@
 package com.uutrunk.hospitalhealthdocument.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.uutrunk.hospitalhealthdocument.pojo.HealthRecordMain;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -9,18 +10,19 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class HealthRecordDTO {
-    private String recordId;
-    private Integer patientId;
-    private Integer createdDoctorId;
+    private Integer recordId;
+    private String patientName;
+    private String createDoctorName;
+    private PatientDetailDTO patientDetailDTO;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
-    private String recordStatus;
+    private HealthRecordMain.Status status;
 
     public static HealthRecordDTO fromEntity(HealthRecordMain entity) {
         return new HealthRecordDTO()
             .setRecordId(entity.getRecordId())
-            .setPatientId(entity.getPatientId()) // 需要确保关联对象已加载
-            .setCreatedDoctorId(entity.getCreatedDoctorId()) // 需要补充医生信息关联
+            .setCreateDoctorName(entity.getCreateDoctorName()) // 需要补充医生信息关联
             .setCreateTime(entity.getCreateTime())
-            .setRecordStatus(entity.getStatus());
+            .setStatus(entity.getStatus());
     }
 }

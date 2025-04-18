@@ -2,6 +2,7 @@ package com.uutrunk.hospitallogin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.uutrunk.hospitallogin.dto.*;
+import com.uutrunk.hospitallogin.exception.*;
 import com.uutrunk.hospitallogin.mapper.RolePermissionMapper;
 import com.uutrunk.hospitallogin.mapper.UserCreationLogMapper;
 import com.uutrunk.hospitallogin.mapper.UserMapper;
@@ -12,20 +13,18 @@ import com.uutrunk.hospitallogin.pojo.UserCreationLog;
 import com.uutrunk.hospitallogin.pojo.VerificationCode;
 import com.uutrunk.hospitallogin.service.UserService;
 import com.uutrunk.hospitallogin.util.PasswordUtil;
-import com.uutrunk.hospitallogin.common.ApiResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -61,16 +60,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ApiResponse<UserDTO> createUser(UserDTO dto) {
+    public UserDTO createUser(UserDTO dto) {
 
         // 检查账号唯一性
         QueryWrapper<User> accountCheck = new QueryWrapper<>();
         accountCheck.eq("account", dto.getAccount());
         if (userMapper.exists(accountCheck)) {
-            return (ApiResponse<UserDTO>) ApiResponse.error("账号已存在");
+            throw new RuntimeException("账号已存在");
         }
         else if(!check(dto.getAdminPassword())) {
-            return (ApiResponse<UserDTO>) ApiResponse.error("管理员密码错误");
+            throw new RuntimeException("权限验证失败");
         }
 
         // 创建用户实体
@@ -81,6 +80,7 @@ public class UserServiceImpl implements UserService {
         user.setName(dto.getName());
         user.setStatus("正常"); // 默认启用状态
         user.setCreateTime(new Date());
+        user.setPhoneNumber(dto.getPhoneNumber());
 
         // 保存用户信息
         userMapper.insert(user);
@@ -92,25 +92,31 @@ public class UserServiceImpl implements UserService {
         log.setCreateTime(new Date());
         userCreationLogMapper.insert(log);
 
-        return ApiResponse.success();
+        return UserDTO.fromEntity(user);
     }
 
     @Override
-    public ApiResponse<LoginResponseDTO> login(LoginRequestDTO loginRequestDTO) {
-        QueryWrapper<User> query = new QueryWrapper<>();
-        query.eq("account", loginRequestDTO.getAccount());
-        User user = userMapper.selectOne(query);
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
+        User user = null;
+        try {
+            QueryWrapper<User> query = new QueryWrapper<>();
+            query.eq("account", loginRequestDTO.getAccount());
+            user = userMapper.selectOne(query);
+        }
+        catch (RuntimeException e) {
+            throw new DataBaseException("用户获取失败");
+        }
         
         if (user == null) {
-            return (ApiResponse<LoginResponseDTO>) ApiResponse.error("账号不存在");
+            throw new UsernameNotFoundException("用户不存在");
         }
         
         if (!PasswordUtil.verify(loginRequestDTO.getPassword(), user.getPassword())) { // 替换为工具类调用
-            return (ApiResponse<LoginResponseDTO>) ApiResponse.error("密码错误");
+            throw new PasswordErrorException("密码错误");
         }
         
         if ("禁用".equals(user.getStatus())) {
-            return (ApiResponse<LoginResponseDTO>) ApiResponse.error("账号已被禁用");
+            throw new UserBannedException("账户已被禁用");
         }
         
         LoginResponseDTO response = new LoginResponseDTO();
@@ -118,7 +124,8 @@ public class UserServiceImpl implements UserService {
         response.setRole(user.getRole());
 
         // 从配置读取Base64密钥并解码
-        Key key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 移除Base64解码
+//        System.out.println("==================233===========================");
 
         // 生成JWT Token逻辑
         String token = Jwts.builder()
@@ -130,12 +137,12 @@ public class UserServiceImpl implements UserService {
             .compact();
         response.setToken(token);
         
-        return ApiResponse.success(response);
+        return response;
     }
 
     @Transactional
     @Override
-    public ApiResponse<?> resetPassword(ResetPasswordDTO dto) {
+    public void resetPassword(ResetPasswordDTO dto) {
         VerificationCode code = verificationCodeMapper.selectOne(
             new QueryWrapper<VerificationCode>()
                 .eq("phone_number", dto.getPhoneNumber())
@@ -145,7 +152,7 @@ public class UserServiceImpl implements UserService {
         );
         
         if (code == null) {
-            return ApiResponse.error("验证码错误或已过期");
+            throw new VerifyError("验证码错误或已过期");
         }
         
         User user = userMapper.selectOne(
@@ -153,7 +160,7 @@ public class UserServiceImpl implements UserService {
         );
         
         if (user == null) {
-            return ApiResponse.error("用户不存在");
+            throw new UsernameNotFoundException("用户不存在");
         }
         
         user.setPassword(PasswordUtil.encode(dto.getNewPassword()));
@@ -162,31 +169,60 @@ public class UserServiceImpl implements UserService {
         code.setIsUsed(true);
         verificationCodeMapper.updateById(code);
         
-        return ApiResponse.success();
+        return;
     }
 
     @Override
-    public ApiResponse<RolePermissionDTO> getPermissions(String role) {
-        RolePermission rp = rolePermissionMapper.selectById(role);
-        if (rp == null) {
-            return (ApiResponse<RolePermissionDTO>) ApiResponse.error("角色不存在");
+    public RolePermissionDTO getPermissions(String token) {
+        // 1. 解析Token获取用户信息
+        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 移除Base64解码
+        Jws<Claims> claimsJws;
+        try {
+            claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (Exception e) {
+            throw new InvalidTokenException("无效的Token");
         }
-        
+
+        // 2. 验证用户存在性
+        String userIdStr = claimsJws.getBody().getSubject();
+//        System.out.println(userIdStr);
+        User user = userMapper.selectById(Integer.valueOf(userIdStr));
+        System.out.println(user);
+//        System.out.println("success");
+        if (user == null) {
+            throw new UsernameNotFoundException("用户不存在");
+        }
+
+        // 3. 获取角色并查询权限
+        String role = user.getRole();
+        System.out.println(role);
+        if (role == null) {
+            throw new RoleNotFoundException("角色不存在");
+        }
+        String perimissions = rolePermissionMapper.selectOne(new QueryWrapper<RolePermission>()
+                .eq("role", role))
+                .getPermissions();
+        System.out.println("success");
+
+        // 4. 构建返回对象
         RolePermissionDTO dto = new RolePermissionDTO();
-        dto.setRole(rp.getRole());
-        dto.setPermissions(List.of(rp.getPermissions().split(",")));
-        
-        return ApiResponse.success(dto);
+        dto.setRole(role);
+        dto.setPermissions(List.of(perimissions.split(",")));
+        return dto;
     }
+
 
     @Transactional
     @Override
-    public ApiResponse<?> sendVerificationCode(VerificationCodeRequestDTO dto) {
+    public void sendVerificationCode(VerificationCodeRequestDTO dto) {
         // 1. 验证手机号是否已注册
         User user = userMapper.selectOne(new QueryWrapper<User>()
                 .eq("phone_number", dto.getPhoneNumber()));
         if (user == null) {
-            return ApiResponse.error("该手机号未注册");
+            throw new PhonenumberNotRegistedException("手机号未注册");
         }
 
         // 2. 检查5分钟内是否已发送过验证码
@@ -195,7 +231,7 @@ public class UserServiceImpl implements UserService {
                 .ge("create_time", new Date(System.currentTimeMillis() - 5 * 60 * 1000))
                 .eq("is_used", false));
         if (latestCode != null) {
-            return ApiResponse.error("验证码已发送，请勿重复请求");
+            throw new RepeatedSendVerificationCodeException("请勿重复发送验证码");
         }
 
         // 3. 生成6位数字验证码
@@ -212,20 +248,20 @@ public class UserServiceImpl implements UserService {
         // 5. 调用短信服务发送验证码（此处需补充短信服务集成）
 //         smsService.sendSms(dto.getPhoneNumber(), code); // 需要配置短信服务
 
-        return ApiResponse.success("验证码已发送");
+        return;
     }
 
     @Transactional
     @Override
-    public ApiResponse<?> updateUserStatus(UpdateUserStatusDTO dto) {
+    public void updateUserStatus(UpdateUserStatusDTO dto) {
         User user = userMapper.selectById(dto.getUserId());
         if (user == null) {
-            return ApiResponse.error("用户不存在");
+            throw new UsernameNotFoundException("用户不存在");
         }
         
         user.setStatus(dto.getStatus());
         userMapper.updateById(user);
         
-        return ApiResponse.success();
+        return;
     }
 }

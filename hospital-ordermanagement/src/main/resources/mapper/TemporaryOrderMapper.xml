@@ -5,8 +5,8 @@
 <mapper namespace="com.uutrunk.hospitalordermanagement.mapper.TemporaryOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.TemporaryOrder">
-            <id property="order_id" column="order_id" />
-            <result property="validity_period" column="validity_period" />
+            <id property="orderId" column="order_id" />
+            <result property="validityPeriod" column="validity_period" />
     </resultMap>
 
     <sql id="Base_Column_List">

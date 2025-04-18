@@ -8,7 +8,7 @@ dubbo:
     name: tri
     port: 50051
 server:
-  port: 8080
+  port: 8081
 jwt:
   expiration: 86400000
   secret: DLlfNAaGhUlDljfxvLnUKNZeAuWni/HRTP+6j1GyGKdiC4JH8vpoBP5bEd+92U7GMEQtM2+HEqv9McthVqzB9g==

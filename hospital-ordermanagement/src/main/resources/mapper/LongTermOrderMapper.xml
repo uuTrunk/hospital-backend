@@ -5,8 +5,8 @@
 <mapper namespace="com.uutrunk.hospitalordermanagement.mapper.LongTermOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.uutrunk.hospitalordermanagement.pojo.LongTermOrder">
-            <id property="order_id" column="order_id" />
-            <result property="stop_time" column="stop_time" />
+            <id property="orderId" column="order_id" />
+            <result property="stopTime" column="stop_time" />
     </resultMap>
 
     <sql id="Base_Column_List">

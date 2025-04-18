@@ -1,13 +1,19 @@
 package com.uutrunk.hospitalhealthdocument.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.uutrunk.hospitalhealthdocument.enums.CareGrade;
 import lombok.Data;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class PatientInfo {
-    @Id
+    @TableId("patient_id")
     private Integer patientId;
     
     private String name;
@@ -16,10 +22,18 @@ public class PatientInfo {
     
     private Integer age;
     
-    private String idNumber;
+    private String idCard;
+
+    private Date birthDate;
+
+    private LocalDateTime registrationDate;
+
+    private String insuranceType;
+
+    private String insuranceId;
     
     private String admissionNumber;
-    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime admissionDate;
     
     private String bedNumber;
@@ -30,9 +44,4 @@ public class PatientInfo {
 
     private CareGrade careGrade;
 
-    public enum CareGrade {
-        一级护理,
-        二级护理,
-        三级护理
-    }
 }

@@ -1,36 +1,36 @@
 package com.uutrunk.hospitalordermanagement.service;
 
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderCreateDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderDTO;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderQueryDTO;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.uutrunk.hospitalordermanagement.dto.MedicalOrderUpdateDTO;
-import com.uutrunk.hospitalordermanagement.pojo.MedicalOrderMain;
+import com.uutrunk.hospitalordermanagement.dto.*;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
+import org.springframework.ai.chat.prompt.Prompt;
+
+import java.util.List;
 
 public interface MedicalOrderService {
 
     /**
      * 创建医嘱
      * @param dto 医嘱创建参数
-     * @return 创建的医嘱信息
+     * @return 创建的医嘱Id
      */
-    MedicalOrderDTO create(MedicalOrderCreateDTO dto);
+    String create(MedicalOrderCreateDTO dto);
 
     /**
      * 更新医嘱信息
      * @param dto 医嘱更新参数
      * @return 更新结果
      */
-    boolean update(MedicalOrderUpdateDTO dto);
+    void update(MedicalOrderUpdateDTO dto);
 
     /**
      * 作废医嘱
      * @param orderId 医嘱ID
-     * @param operatorId 操作人ID
+     * @param doctorName  医生ID
      * @return 作废结果
      */
-    boolean voidOrder(String orderId, Integer operatorId);
+    void deleteOrder(String orderId, String doctorName);
 
     /**
      * 获取医嘱详情
@@ -44,5 +44,8 @@ public interface MedicalOrderService {
      * @param queryDTO 查询参数
      * @return 分页结果
      */
-    IPage<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO);
+    PageResult<MedicalOrderDTO> list(MedicalOrderQueryDTO queryDTO);
+
+    String chat(String message);
+
 }
