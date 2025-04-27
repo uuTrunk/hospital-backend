@@ -1,17 +1,14 @@
 package com.uutrunk.hospitalhealthdocument.service.impl;
 
 import com.alibaba.nacos.shaded.org.checkerframework.checker.nullness.qual.NonNull;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.uutrunk.hospitalhealthdocument.common.ApiResponse;
 import com.uutrunk.hospitalhealthdocument.convertor.AdmissionHistoryConvertor;
 import com.uutrunk.hospitalhealthdocument.convertor.DiagnosisPlanConvertor;
 import com.uutrunk.hospitalhealthdocument.convertor.HealthRecordConvertor;
 import com.uutrunk.hospitalhealthdocument.convertor.PatientConvertor;
 import com.uutrunk.hospitalhealthdocument.dto.*;
-import com.uutrunk.hospitalhealthdocument.exception.DatabaseException;
 import com.uutrunk.hospitalhealthdocument.mapper.*;
 import com.uutrunk.hospitalhealthdocument.pojo.*;
 import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
@@ -21,7 +18,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 // 新增文件：健康档案业务实现
 
@@ -30,11 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static com.alibaba.nacos.client.naming.core.Balancer.RandomByWeight.selectAll;
 
 @DubboService(timeout = 50000)
 @Component

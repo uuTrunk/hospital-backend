@@ -1,19 +1,15 @@
 // 新增文件：健康档案控制器
 package com.uutrunk.hospitalhealthdocument.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.uutrunk.hospitalhealthdocument.common.ApiResponse;
 import com.uutrunk.hospitalhealthdocument.dto.*;
 import com.uutrunk.hospitalhealthdocument.service.HealthRecordService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/health-record")

@@ -1,4 +1,4 @@
-package com.uutrunk.hospitalhealthdocument.common;
+package com.uutrunk.hospitalmedicine.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -14,6 +14,7 @@
         <module name="hospital-discharge-service" />
         <module name="hospital-ordermanagement" />
         <module name="hospital-login" />
+        <module name="hospital-medicine" />
       </profile>
     </annotationProcessing>
   </component>
