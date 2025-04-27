@@ -3,8 +3,9 @@ package com.julien.hospitaldischargeservice.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
+import java.util.List;
 
-/**D
+/**
  * 对应数据库表：discharge_main
  */
 @Entity
@@ -15,14 +16,13 @@ public class DischargeMain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "discharge_id")
-    private Integer dischargeId; // 主键，自增
+    private Integer dischargeId;
 
     /**
      * 外键关联到 patient_info 表的 patient_id
      * 你可以选择直接存 patientId，
      * 或者建立和 PatientInfo 实体的关联关系
      */
-
 
     // 建立多对一关系
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,18 +32,24 @@ public class DischargeMain {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "discharge_reason", nullable = false)
-    private DischargeReason dischargeReason; // 离院原因（ENUM）
+    private DischargeReason dischargeReason;
 
     @Column(name = "discharge_date", nullable = false)
-    private LocalDate dischargeDate; // 离院日期
+    private LocalDate dischargeDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "summary_status", nullable = false)
-    private SummaryStatus summaryStatus; // 小结状态
+    private SummaryStatus summaryStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "handover_status", nullable = false)
-    private HandoverStatus handoverStatus; // 交接状态
+    private HandoverStatus handoverStatus;
+
+    @OneToOne(mappedBy = "dischargeMain", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private DischargeSummary dischargeSummary;
+
+    @OneToMany(mappedBy = "dischargeMain", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DischargeHandover> dischargeHandovers;
 
     /**
      * 下面定义 ENUM 类型
@@ -51,8 +57,9 @@ public class DischargeMain {
      */
     public enum DischargeReason {
         自动出院,
-        转院出院,
-        外院死亡
+        本院死亡,
+        外院死亡,
+        转院出院
     }
 
     public enum SummaryStatus {

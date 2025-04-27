@@ -3,7 +3,7 @@ package com.julien.hospitaldischargeservice.controller;
 import com.julien.hospitaldischargeservice.entity.DischargeHandover;
 import com.julien.hospitaldischargeservice.service.DischargeHandoverService;
 import com.julien.hospitaldischargeservice.util.ApiResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/discharge/handover")
-@RequiredArgsConstructor
 public class DischargeHandoverController {
 
-    private final DischargeHandoverService dischargeHandoverService;
+    @Autowired
+    private DischargeHandoverService dischargeHandoverService;
 
     @PostMapping("/submit")
     public ResponseEntity<ApiResponse<String>> submitDischargeHandover(

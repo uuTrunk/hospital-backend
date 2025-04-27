@@ -3,16 +3,16 @@ package com.julien.hospitaldischargeservice.controller;
 import com.julien.hospitaldischargeservice.entity.DischargeSummary;
 import com.julien.hospitaldischargeservice.service.DischargeSummaryService;
 import com.julien.hospitaldischargeservice.util.ApiResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/discharge/summary")
-@RequiredArgsConstructor
 public class DischargeSummaryController {
 
-    private final DischargeSummaryService dischargeSummaryService;
+    @Autowired
+    private DischargeSummaryService dischargeSummaryService;
 
     /**
      * 获取离院小结详情
@@ -38,7 +38,8 @@ public class DischargeSummaryController {
             @RequestBody DischargeSummary dischargeSummary) {
 
         // 校验离院记录是否存在，可以在服务层实现
-        if (dischargeSummary.getDischargeMain() == null || dischargeSummary.getDischargeMain().getDischargeId() == null) {
+        if (dischargeSummary.getDischargeMain() == null
+                || dischargeSummary.getDischargeMain().getDischargeId() == null) {
             return ResponseEntity.status(400).body(new ApiResponse<>(400, "离院记录 ID 必须提供", null));
         }
 

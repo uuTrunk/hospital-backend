@@ -19,20 +19,20 @@ public class DischargeSummary {
 
     /**
      * 外键关联到 discharge_main 表的 discharge_id
-     * 这里使用 @ManyToOne 建立多对一关系
+     * 这里使用 @OneToOne 建立一对一关系
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discharge_id", nullable = false)
     private DischargeMain dischargeMain;
 
     @Column(name = "discharge_date", nullable = false)
     private LocalDate dischargeDate; // 离院日期
 
-    @Column(name = "illness_name", length = 100, nullable = false)
+    @Column(name = "illness_name")
     private String illnessName; // 疾病名称
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "summary_type")
+    @Column(name = "summary_type", nullable = false)
     private SummaryType summaryType; // 小结类型
 
     @Column(name = "admission_diagnosis", columnDefinition = "TEXT")
@@ -58,7 +58,7 @@ public class DischargeSummary {
 
     // 枚举：普通小结 or 死亡小结
     public enum SummaryType {
-        普通小结,
-        死亡小结
+        普通,
+        死亡
     }
 }
